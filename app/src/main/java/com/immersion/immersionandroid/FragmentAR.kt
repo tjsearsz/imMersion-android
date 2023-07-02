@@ -76,7 +76,7 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
                     sceneView.engine,
                     imageName = "rabbit",
                     bitmap = bitmap
-                ).apply { loadModelGlbAsync(glbFileLocation = "models/spiderbot.glb") }
+                ).apply { loadModelGlbAsync(glbFileLocation = "https://cdn.filestackcontent.com/vZvdHVwZR2mCLKPXuBsW") }
             )
         }.start()
 
