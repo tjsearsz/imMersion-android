@@ -1,4 +1,4 @@
-package com.immersion.dataAccess
+package com.immersion.immersionandroid.dataAccess
 
 // import android.graphics.Bitmap
 

@@ -1,4 +1,4 @@
-package com.immersion.immersionandroid
+package com.immersion.ui
 
 import org.junit.Test
 

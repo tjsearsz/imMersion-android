@@ -3,8 +3,11 @@ package com.immersion.immersionandroid
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.commit
+import com.immersion.immersionandroid.ui.FragmentAR
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.utils.setFullScreen
 
+// @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
