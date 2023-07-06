@@ -57,12 +57,10 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
         lifecycleScope.launch {
 
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
-                val result = ApolloAugmentedImageClient().getAugmentedImages()
 
-                        // result.await()
-
-                lifecycleScope.launch(Dispatchers.IO){
-                    var bitmap = getBitmap(result.imageURL)
+               lifecycleScope.launch(Dispatchers.IO){
+                 //   var bitmap = getBitmap(result.imageURL)
+                   val result = ApolloAugmentedImageClient().getAugmentedImages()
 
                     lifecycleScope.launch(Dispatchers.Main){
                         Log.d("debugging", "bitmapeee")
@@ -71,13 +69,10 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
                             AugmentedImageNode(
                                 // sceneView.engine,
                                 imageName = "rabbit",
-                                bitmap = bitmap
+                                bitmap = result.bitmapImageURL
                             ).loadModelGlbAsync(glbFileLocation = result.modelURL))
                     }
-                }
-
-
-
+               }
             }
         }
 
@@ -343,13 +338,5 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
                  Log.d("debugeando", sceneView.children.toString())
              }
          }*/
-    }
-
-    private fun getBitmap(URL: String): Bitmap {
-        // val imageUrl = "https://cdn.filestackcontent.com/Vi3fEpCOQ3Gv3JkBZUxb"
-        //val url = URL(imageUrl)
-        val url = URL(URL)
-        Log.d("debugging", "casi casi")
-        return BitmapFactory.decodeStream(url.openStream())
     }
 }

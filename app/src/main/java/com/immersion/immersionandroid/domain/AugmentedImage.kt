@@ -1,3 +1,5 @@
 package com.immersion.immersionandroid.domain
 
-data class AugmentedImage(val imageURL: String, val modelURL: String)
+import android.graphics.Bitmap
+
+data class AugmentedImage(val imageURL: String, val modelURL: String, val bitmapImageURL: Bitmap)
