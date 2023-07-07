@@ -14,12 +14,15 @@ import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.immersion.immersionandroid.R
 import com.immersion.immersionandroid.dataAccess.ApolloAugmentedImageClient
+import com.immersion.immersionandroid.domain.AugmentedImage
 import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.SceneView
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.BaseArFragment
 import io.github.sceneview.ar.arcore.ArSession
+import io.github.sceneview.ar.arcore.isTracking
+import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.AugmentedImageNode
 import io.github.sceneview.model.GLBLoader.loadModel
 import io.github.sceneview.node.ModelNode
@@ -30,12 +33,80 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
+import java.util.UUID
 
 
 // @AndroidEntryPoint
 class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
     lateinit var sceneView: ArSceneView
+    val superlist: MutableList<String> = mutableListOf()
+
+    private fun setupImageDatabase(result: List<AugmentedImage>) {
+
+        sceneView.configureSession { session, config ->
+
+            config.planeFindingMode = Config.PlaneFindingMode.DISABLED
+
+            val database = AugmentedImageDatabase(session)
+
+            // database.addImage()
+
+            /*val hola = AugmentedImageNode("yes", null).apply {
+                loadModelGlbAsync(glbFileLocation = it.modelURL)
+            }*/
+
+            result.forEach {
+                val hola = UUID.randomUUID().toString().substring(0, 8)
+                database.addImage(hola, it.bitmapImageURL)
+                //database.addImage("whatever2", result[1].bitmapImageURL)
+
+                superlist.add(hola)
+                sceneView.addChild(AugmentedImageNode(hola, null).apply {
+                    loadModelGlbAsync(glbFileLocation = it.modelURL)
+                })
+            }
+
+            /*database.addImage("whatever", result[0].bitmapImageURL)
+            database.addImage("whatever2", result[1].bitmapImageURL)*/
+
+            config.augmentedImageDatabase = database
+
+            session.configure(config)
+
+            /*sceneView.onAugmentedImageUpdate += { augmentedImage ->
+                Log.d("debugging", "llegue")
+                Log.d("debugging", augmentedImage.name)
+                Log.d("debugging", "${augmentedImage.trackingState}")
+                Log.d("debugging", "${augmentedImage.anchors.size}")
+                if (augmentedImage.isTracking && augmentedImage.anchors.isEmpty()) {
+               //     if(modelNode?.)
+                    Log.d("debugging", "${augmentedImage.name}")
+                    Log.d("debugging", "los anchores${augmentedImage.anchors.size}")
+
+                   val node2 = AugmentedImageNode(augmentedImage.name, null).apply {
+                       //loadModelGlbAsync(glbFileLocation = result[1].modelURL)
+                       loadModelGlbAsync(glbFileLocation = result[superlist.indexOfFirst { it == augmentedImage.name }].modelURL)
+                   }
+
+                    /************************ Normal node ************************/
+                    val anchorImage = augmentedImage.createAnchor(augmentedImage.centerPose)
+                    val node = ArModelNode()
+                    node.apply {
+                        //loadModelGlbAsync(glbFileLocation = if(augmentedImage.name == "whatever") result[1].modelURL else result[0].modelURL)
+                        loadModelGlbAsync(glbFileLocation = result[superlist.indexOfFirst { it == augmentedImage.name }].modelURL)
+                    }
+                    node.anchor = anchorImage
+                    /************************ Normal node ************************/
+
+                    sceneView.addChild(node)
+                    // sceneView.addChild(node2)
+                }
+            }*/
+
+        }
+
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,23 +127,66 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
         lifecycleScope.launch {
 
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
 
-               lifecycleScope.launch(Dispatchers.IO){
-                 //   var bitmap = getBitmap(result.imageURL)
-                   val result = ApolloAugmentedImageClient().getAugmentedImages()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    //   var bitmap = getBitmap(result.imageURL)
+                    val result = ApolloAugmentedImageClient().getAugmentedImages()
 
-                    lifecycleScope.launch(Dispatchers.Main){
+                    lifecycleScope.launch(Dispatchers.Main) {
                         Log.d("debugging", "bitmapeee")
 
+                        setupImageDatabase(result)
+                        // sceneView.configureSession(::setupImageDatabase)
+
+                        // result.forEach {
+                       /* sceneView.onAugmentedImageUpdate +=
+                            {augmentedImage ->
+
+                                Log.d("debugging", augmentedImage.name)
+                            }*/
+
+                        /* var it = result[0]
+                            sceneView.addChild(
+
+                                AugmentedImageNode(
+                                    // imageName = UUID.randomUUID().toString().substring(0, 8),
+                                    imageName = superlist[0],
+                                    //bitmap = it.bitmapImageURL,
+                                    bitmap = null,
+                                    onUpdate = {_, _-> Log.d("debugging", "actualice 1")}
+                                ).apply { loadModelGlbAsync(glbFileLocation = it.modelURL) }
+
+                            )
+
+
+                       /* sceneView.onAugmentedImageUpdate +=
+                            {augmentedImage ->
+
+                                Log.d("debugging", augmentedImage.name)
+                            }*/
+
+                        it = result[1]
+
                         sceneView.addChild(
+
                             AugmentedImageNode(
-                                // sceneView.engine,
-                                imageName = "rabbit",
-                                bitmap = result.bitmapImageURL
-                            ).loadModelGlbAsync(glbFileLocation = result.modelURL))
+                                //imageName = UUID.randomUUID().toString().substring(0, 8),
+                                imageName = superlist[1],
+                                // bitmap = it.bitmapImageURL,
+                                bitmap = null,
+                                onUpdate = {_, _-> Log.d("debugging", "actualice 2")}
+                            ).apply { loadModelGlbAsync(glbFileLocation = it.modelURL) }
+
+                        )*/
+
+
+                        // }
+
+                        Log.d("debugging", "mis hijos ${sceneView.children.size}")
+
                     }
-               }
+                }
             }
         }
 

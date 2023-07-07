@@ -7,7 +7,7 @@ import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.immersionandroid.domain.AugmentedImage
 import java.net.URL
 
-fun GetAllAugmentedImagesQuery.GetAllAugmentedImages.toAugmentedImage(): AugmentedImage {
+fun GetAllAugmentedImagesQuery.GetAllAugmentedImage.toAugmentedImage(): AugmentedImage {
     Log.d("debugging", "${modelURL} ${imageURL}")
     var bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
     return AugmentedImage(imageURL = imageURL, modelURL = modelURL, bitmapImageURL = bitmapImageURL)

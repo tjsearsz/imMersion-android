@@ -10,7 +10,7 @@ The `Boolean` scalar type represents `true` or `false`.
 scalar Boolean
 
 type Query {
-  getAllAugmentedImages: AugmentedImage!
+  getAllAugmentedImages: [AugmentedImage!]!
 }
 
 """

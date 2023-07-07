@@ -23,8 +23,8 @@ class AugmentedRealityViewModel @Inject constructor(private val apolloAugmentedI
         Log.d("golazo", "supe megagaga")
         viewModelScope.launch {
             val result = apolloAugmentedImageClient.getAugmentedImages()
-            Log.d("metodo", result.modelURL)
-            _state.update { it.copy(augmentedImage = result) }
+           // Log.d("metodo", result.modelURL)
+            // _state.update { it.copy(augmentedImage = result) }
         }
     }
 
