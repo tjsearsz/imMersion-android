@@ -9,7 +9,7 @@ import java.net.URL
 
 fun GetAllAugmentedImagesQuery.GetAllAugmentedImage.toAugmentedImage(): AugmentedImage {
     Log.d("debugging", "${modelURL} ${imageURL}")
-    var bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
+    val bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
     return AugmentedImage(imageURL = imageURL, modelURL = modelURL, bitmapImageURL = bitmapImageURL)
 }
 
