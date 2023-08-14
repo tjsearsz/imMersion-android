@@ -12,6 +12,7 @@ import java.net.URL
 class ApolloAugmentedImageClient(//private val apolloClient:ApolloClient
 ) : IAugmentedImageClient {
 
+    //TODO: Change this to hilt
     private val apolloClient: ApolloClient =
         ApolloClient.Builder().serverUrl("http://10.5.50.146:3000/graphql").build()
     override suspend fun getAugmentedImages(): List<AugmentedImage> {

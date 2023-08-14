@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/jobInformationFragment">
+
+    <fragment
+        android:id="@+id/jobInformationFragment"
+        android:name="com.immersion.immersionandroid.ui.JobInformationFragment"
+        android:label="fragment_job_information"
+        tools:layout="@layout/fragment_job_information" >
+        <action
+            android:id="@+id/action_jobInformationFragment_to_jobImageFragment"
+            app:destination="@id/jobImageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/jobImageFragment"
+        android:name="com.immersion.immersionandroid.ui.JobImageFragment"
+        android:label="fragment_job_image"
+        tools:layout="@layout/fragment_job_image" />
+</navigation>
