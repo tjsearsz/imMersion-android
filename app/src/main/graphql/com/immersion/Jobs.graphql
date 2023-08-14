@@ -1,0 +1,11 @@
+mutation addJob($input: CreateJobInput!){
+    createJob(createJobInput: $input){
+        name
+        isEnabled
+        augmentedImage{
+            redirectURL
+            imageURL
+            modelURL
+        }
+    }
+}

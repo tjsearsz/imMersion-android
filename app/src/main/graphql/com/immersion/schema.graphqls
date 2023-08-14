@@ -1,7 +1,52 @@
 type AugmentedImage {
+  """
+  URL location for the image that will be scanned by the device
+  """
   imageURL: String!
 
+  """
+  URL location for the Model to be rendered for this Image
+  """
   modelURL: String!
+
+  """
+  Redirect page when clicking the image
+  """
+  redirectURL: String
+}
+
+type AugmentedImage2 {
+  """
+  URL location for the image that will be scanned by the device
+  """
+  imageURL: String!
+
+  """
+  URL location for the Model to be rendered for this Image
+  """
+  modelURL: String!
+
+  """
+  Redirect page when clicking the image
+  """
+  redirectURL: String
+}
+
+input AugmentedImageInput {
+  """
+  URL where the image of the new model is located
+  """
+  imageURL: String!
+
+  """
+  URL for the model we want to create
+  """
+  modelURL: String!
+
+  """
+  URL where the user can click to get redirected to
+  """
+  redirectURL: String
 }
 
 """
@@ -9,14 +54,348 @@ The `Boolean` scalar type represents `true` or `false`.
 """
 scalar Boolean
 
+type Branch {
+  """
+  Address of the branch
+  """
+  address: String!
+
+  """
+  Determines whether this branch is still available or not
+  """
+  isEnabled: Boolean!
+}
+
+type Company {
+  """
+  Brief information about the company
+  """
+  description: String
+
+  """
+  Determines whether the company is active or not
+  """
+  isEnabled: Boolean!
+
+  """
+  Name of the company
+  """
+  name: String!
+}
+
+input CreateBranchInput {
+  """
+  Address of this Branch
+  """
+  address: String!
+
+  """
+  Company where this branch belongs to
+  """
+  companyId: String!
+}
+
+input CreateCompanyInput {
+  """
+  Brief information about the new company
+  """
+  description: String
+
+  """
+  Name of the new company
+  """
+  name: String!
+}
+
+input CreateJobInput {
+  """
+  Augmented Image for this Job
+  """
+  augmentedImage: AugmentedImageInput!
+
+  """
+  Branch where this Job will be executed
+  """
+  branchId: String!
+
+  """
+  Complete description of the new Job
+  """
+  description: String!
+
+  """
+  Title of the new Job
+  """
+  name: String!
+
+  """
+  URL to redirect if available
+  """
+  redirectURL: String
+}
+
+input CreateUserInput {
+  """
+  Email address of the new user
+  """
+  email: String!
+
+  """
+  First name of the new user
+  """
+  firstName: String!
+
+  """
+  Last name of the user
+  """
+  lastName: String!
+
+  """
+  Password of the new User
+  """
+  password: String!
+}
+
+"""
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+"""
+scalar Int
+
+type Job {
+  augmentedImage: AugmentedImage!
+
+  """
+  Complete description of the job
+  """
+  description: String!
+
+  """
+  Determines whether the job is active or not
+  """
+  isEnabled: Boolean!
+
+  """
+  Title of the job
+  """
+  name: String!
+
+  """
+  URL to redirect if available
+  """
+  redirectURL: String
+}
+
+"""
+The response when doing login that includes the access_token
+"""
+type LoginPayload {
+  """
+  The JWT accesst token
+  """
+  accessToken: String!
+
+  """
+  The user entity
+  """
+  user: User!
+}
+
+"""
+Input for doing authentication
+"""
+input LoginUserInput {
+  """
+  Email address of the new user
+  """
+  email: String!
+
+  """
+  Password of the new User
+  """
+  password: String!
+}
+
+type Mutation {
+  createBranch(createBranchInput: CreateBranchInput!): Branch!
+
+  createCompany(createCompanyInput: CreateCompanyInput!): Company!
+
+  createJob(createJobInput: CreateJobInput!): Job!
+
+  createUser(createUserInput: CreateUserInput!): User!
+
+  login(loginUserInput: LoginUserInput!): LoginPayload!
+
+  removeBranch(id: Int!): Branch!
+
+  removeCompany(id: Int!): Company!
+
+  removeJob(id: Int!): Job!
+
+  removeUser(id: Int!): User!
+
+  signIn(createUserInput: CreateUserInput!): User!
+
+  updateAugmentedImage("AugmentedImage to be updated in a job" augmentedImageInput: UpdateJobImageInput!): Job!
+
+  updateBranch(updateBranchInput: UpdateBranchInput!): Branch!
+
+  updateCompany(updateCompanyInput: UpdateCompanyInput!): Company!
+
+  updateJob(updateJobInput: UpdateJobInput!): Job!
+
+  updateUser(updateUserInput: UpdateUserInput!): User!
+}
+
 type Query {
-  getAllAugmentedImages: [AugmentedImage!]!
+  branch: [Branch!]!
+
+  getAllAugmentedImages: [AugmentedImage2!]!
+
+  job(id: Int!): Job!
+
+  user(id: Int!): User!
+
+  """
+  Find all companies that belong to the user
+  """
+  userCompanies(id: String!): [Company!]!
 }
 
 """
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 """
 scalar String
+
+input UpdateBranchInput {
+  """
+  Address of this Branch
+  """
+  address: String!
+
+  """
+  ID of the branch
+  """
+  id: String!
+
+  """
+  Enables/disables the Branch
+  """
+  isEnabled: Boolean!
+}
+
+input UpdateCompanyInput {
+  """
+  Brief information about the new company
+  """
+  description: String
+
+  """
+  ID of the Company to update
+  """
+  id: String!
+
+  """
+  Enables/disables the company
+  """
+  isEnabled: Boolean!
+
+  """
+  Name of the new company
+  """
+  name: String!
+}
+
+"""
+Data for updating the Augmented Image of a job
+"""
+input UpdateJobImageInput {
+  """
+  URL where the image of the new model is located
+  """
+  imageURL: String!
+
+  """
+  ID of the Job for this image
+  """
+  jobId: String!
+
+  """
+  URL for the model we want to create
+  """
+  modelURL: String!
+
+  """
+  URL where the user can click to get redirected to
+  """
+  redirectURL: String
+}
+
+input UpdateJobInput {
+  """
+  Complete description of the new Job
+  """
+  description: String!
+
+  """
+  ID of the Job
+  """
+  id: String!
+
+  """
+  Enables/disables the Job
+  """
+  isEnabled: Boolean!
+
+  """
+  Title of the new Job
+  """
+  name: String!
+
+  """
+  URL to redirect if available
+  """
+  redirectURL: String
+}
+
+input UpdateUserInput {
+  """
+  Email address of the new user
+  """
+  email: String!
+
+  """
+  First name of the new user
+  """
+  firstName: String!
+
+  """
+  ID of the user
+  """
+  id: String!
+
+  """
+  Last name of the user
+  """
+  lastName: String!
+}
+
+type User {
+  """
+  Email of the user
+  """
+  email: String!
+
+  """
+  First Name of the user
+  """
+  firstName: String!
+
+  """
+  Last name of the user
+  """
+  lastName: String!
+}
 
 """
 A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
@@ -311,4 +690,5 @@ directive @specifiedBy ("The URL that specifies the behavior of this scalar." ur
 
 schema {
   query: Query
+  mutation: Mutation
 }
