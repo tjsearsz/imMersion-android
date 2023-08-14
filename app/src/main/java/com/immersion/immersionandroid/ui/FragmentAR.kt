@@ -15,7 +15,7 @@ import com.google.ar.core.Config
 import com.immersion.immersionandroid.R
 import com.immersion.immersionandroid.dataAccess.ApolloAugmentedImageClient
 import com.immersion.immersionandroid.domain.AugmentedImage
-import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
+// import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.SceneView
 import io.github.sceneview.ar.ArSceneView
