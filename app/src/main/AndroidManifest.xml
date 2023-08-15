@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".AugmentedRealityApp"
@@ -16,11 +16,15 @@
         android:theme="@style/Theme.ImMersionAndroid"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <!--<activity
+       <!-- <activity
+            android:name=".ui.CreateCompanyActivity"
+            android:exported="false" /> -->
+        <!--
+        <activity
             android:name=".ui.CreateJobActivity"
             android:exported="false" /> -->
         <activity
-            android:name=".ui.CreateJobActivity"
+            android:name=".ui.CreateCompanyActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

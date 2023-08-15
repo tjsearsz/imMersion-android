@@ -2,6 +2,7 @@ package com.immersion.immersionandroid.di
 
 import com.apollographql.apollo3.ApolloClient
 import com.immersion.immersionandroid.AuthorizationInterceptor
+import com.immersion.immersionandroid.dataAccess.ACRURepository
 import com.immersion.immersionandroid.dataAccess.ApolloAugmentedImageClient
 import com.immersion.immersionandroid.dataAccess.FileStackDataSource
 import com.immersion.immersionandroid.dataAccess.IFilestackDataSource
@@ -14,6 +15,10 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import com.apollographql.apollo3.api.Mutation
+import com.immersion.AddCompanyMutation
+import com.immersion.immersionandroid.dataAccess.CompanyRepository
+import com.immersion.immersionandroid.domain.Company
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -47,6 +52,12 @@ object AppModule {
     @Singleton
     fun provideImmersionJobRepository(apolloClient: ApolloClient): IJobRepository {
         return JobRepository(apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImmersionCompanyRepository(apolloClient: ApolloClient): ACRURepository<Company, AddCompanyMutation.Data> {
+        return CompanyRepository(apolloClient)
     }
 
     /*@Provides
