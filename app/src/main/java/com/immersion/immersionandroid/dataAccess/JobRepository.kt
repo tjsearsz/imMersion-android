@@ -26,7 +26,7 @@ class JobRepository(private val apolloClient: ApolloClient) : IJobRepository {
             )
 
             val createJobInput =
-                CreateJobInput(imageInput, "64b853ba0497f2758c7a8281", job.description, job.name)
+                CreateJobInput(imageInput, job.branchId, job.description, job.name)
             val jobInput = AddJobMutation(createJobInput)
 
             val response = this.apolloClient.mutation(jobInput).execute()

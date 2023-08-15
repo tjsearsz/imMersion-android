@@ -16,10 +16,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import com.apollographql.apollo3.api.Mutation
+import com.immersion.AddBranchMutation
 import com.immersion.AddCompanyMutation
+import com.immersion.immersionandroid.dataAccess.BranchRepository
 import com.immersion.immersionandroid.dataAccess.CompanyRepository
+import com.immersion.immersionandroid.domain.Branch
 import com.immersion.immersionandroid.domain.Company
 
+
+//TODO: divide this app module into submodules to have more granularity
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -58,6 +63,12 @@ object AppModule {
     @Singleton
     fun provideImmersionCompanyRepository(apolloClient: ApolloClient): ACRURepository<Company, AddCompanyMutation.Data> {
         return CompanyRepository(apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImmersionBranchRepository(apolloClient: ApolloClient): ACRURepository<Branch, AddBranchMutation.Data>{
+        return BranchRepository(apolloClient)
     }
 
     /*@Provides

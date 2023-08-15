@@ -1,0 +1,6 @@
+mutation addBranch($input: CreateBranchInput!) {
+    createBranch(createBranchInput: $input){
+        address
+        isEnabled
+    }
+}
