@@ -19,7 +19,7 @@ import javax.inject.Inject
 class JobViewModel @Inject constructor(
     private val filestackRepository: FileStackDataSource,
     private val jobRepository: IJobRepository,
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context //TODO: CHECK THIS MAYBE IT IS NOT NEEDED ANYMORE
 ) :
     ViewModel() {
 

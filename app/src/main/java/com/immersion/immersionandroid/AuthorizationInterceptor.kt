@@ -20,7 +20,7 @@ class AuthorizationInterceptor : HttpInterceptor {
         //TODO: IMPROVE INTERCEPTOR
         Log.d("TESTING", "interceptor!")
         var token = mutex.withLock {
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbGEyQGhvbGEuY29tIiwic3ViIjoiNjRiNDY2YmFjMTc3ZGJhYWY4Y2I4YmIwIiwiaWF0IjoxNjkyMDM3Njg4LCJleHAiOjE2OTIwNDEyODh9.5H88GjR7LMy_mEATVfxfCuqb387aFZBaZvtlbdNTEyo"
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbGEyQGhvbGEuY29tIiwic3ViIjoiNjRiNDY2YmFjMTc3ZGJhYWY4Y2I4YmIwIiwiaWF0IjoxNjkyMDYwNjkzLCJleHAiOjE2OTIwOTY2OTN9.GWbf-elyjpzC4c6sWpHzUnROVxSnjdMF6W8T4hVCPjg"
         }
 
         val response =
