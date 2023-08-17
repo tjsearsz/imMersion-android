@@ -11,7 +11,12 @@ class BranchRepository(apolloClient: ApolloClient) : ACRURepository<Branch, AddB
 ) {
     override fun prepareMutation(entity: Branch): Mutation<AddBranchMutation.Data> {
 
-        val data = CreateBranchInput(address = entity.address, companyId = entity.companyId)
+        val data = CreateBranchInput(
+            address = listOf(
+                entity.address.longitude,
+                entity.address.latitude
+            ), companyId = entity.companyId
+        )
         return AddBranchMutation(data)
 
     }

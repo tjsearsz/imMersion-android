@@ -1,4 +1,6 @@
 package com.immersion.immersionandroid.domain
 
-data class Branch(val address: String, val companyId: String, val isEnabled: Boolean = false) :
+import com.google.android.gms.maps.model.LatLng
+
+data class Branch(val address: LatLng, val companyId: String, val isEnabled: Boolean = false) :
     IEmployeeOwnerShip

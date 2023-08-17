@@ -58,7 +58,7 @@ type Branch {
   """
   Address of the branch
   """
-  address: String!
+  address: [Float!]!
 
   """
   Determines whether this branch is still available or not
@@ -85,9 +85,9 @@ type Company {
 
 input CreateBranchInput {
   """
-  Address of this Branch
+  Address of this Branch Long/Lat
   """
-  address: String!
+  address: [Float!]!
 
   """
   Company where this branch belongs to
@@ -155,6 +155,11 @@ input CreateUserInput {
   """
   password: String!
 }
+
+"""
+The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Float
 
 """
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
@@ -269,9 +274,9 @@ scalar String
 
 input UpdateBranchInput {
   """
-  Address of this Branch
+  Address of this Branch Long/Lat
   """
-  address: String!
+  address: [Float!]!
 
   """
   ID of the branch
