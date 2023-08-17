@@ -58,7 +58,8 @@ class JobViewModel @Inject constructor(
             mutableNewJobName.value!!,
             mutableNewJobDescription.value!!,
             null,
-            newAugmentedRealityImage
+            newAugmentedRealityImage,
+            "64b853ba0497f2758c7a8281"
         )
         this.jobRepository.createJob(newJob)
     }
