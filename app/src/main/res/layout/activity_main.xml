@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
+   <!-- <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,5 +15,58 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_a_r" />
+        tools:layout="@layout/fragment_a_r" /> -->
+
+
+   <EditText
+       android:id="@+id/editTextTextEmailAddress"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:ems="10"
+       android:inputType="textEmailAddress"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintHorizontal_bias="0.497"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintVertical_bias="0.373"
+       android:hint="email"/>
+
+   <EditText
+       android:id="@+id/editTextTextPassword"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:ems="10"
+       android:inputType="textPassword"
+       android:hint="Password"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintHorizontal_bias="0.497"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress"
+       app:layout_constraintVertical_bias="0.169" />
+
+   <Button
+       android:id="@+id/logIn"
+       android:layout_width="105dp"
+       android:layout_height="51dp"
+       android:text="Log-In"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/editTextTextPassword"
+       app:layout_constraintVertical_bias="0.227" />
+
+   <Button
+       android:id="@+id/register"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Register"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/logIn"
+       app:layout_constraintVertical_bias="0.281" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

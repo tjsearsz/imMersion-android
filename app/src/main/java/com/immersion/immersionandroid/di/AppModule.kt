@@ -1,5 +1,6 @@
 package com.immersion.immersionandroid.di
 
+import android.content.Context
 import com.apollographql.apollo3.ApolloClient
 import com.immersion.immersionandroid.AuthorizationInterceptor
 import com.immersion.immersionandroid.dataAccess.ACRURepository
@@ -15,13 +16,21 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import com.apollographql.apollo3.api.Mutation
 import com.immersion.AddBranchMutation
 import com.immersion.AddCompanyMutation
+import com.immersion.SignInMutation
+import com.immersion.UpdateUserMutation
+import com.immersion.immersionandroid.dataAccess.AuthorizationRepository
 import com.immersion.immersionandroid.dataAccess.BranchRepository
 import com.immersion.immersionandroid.dataAccess.CompanyRepository
+import com.immersion.immersionandroid.dataAccess.DataStoreRepository
+import com.immersion.immersionandroid.dataAccess.IAuthorizationRepository
+import com.immersion.immersionandroid.dataAccess.IDataStoreRepository
+import com.immersion.immersionandroid.dataAccess.UserRepository
 import com.immersion.immersionandroid.domain.Branch
 import com.immersion.immersionandroid.domain.Company
+import com.immersion.immersionandroid.domain.User
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 
 //TODO: divide this app module into submodules to have more granularity
@@ -31,9 +40,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApolloClient(): ApolloClient {
+    fun provideApolloClient(dataStoreRepository: IDataStoreRepository): ApolloClient {
         return ApolloClient.Builder().serverUrl("http://10.5.48.68:3000/graphql")
-            .addHttpInterceptor(AuthorizationInterceptor()).build()
+            .addHttpInterceptor(AuthorizationInterceptor(dataStoreRepository)).build()
     }
 
     @Provides
@@ -61,14 +70,32 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideImmersionCompanyRepository(apolloClient: ApolloClient): ACRURepository<Company, AddCompanyMutation.Data> {
+    fun provideImmersionCompanyRepository(apolloClient: ApolloClient): ACRURepository<Company, AddCompanyMutation.Data, Boolean, Boolean, AddCompanyMutation.Data> {
         return CompanyRepository(apolloClient)
     }
 
     @Provides
     @Singleton
-    fun provideImmersionBranchRepository(apolloClient: ApolloClient): ACRURepository<Branch, AddBranchMutation.Data>{
+    fun provideImmersionBranchRepository(apolloClient: ApolloClient): ACRURepository<Branch, AddBranchMutation.Data, Boolean, Boolean, AddBranchMutation.Data> {
         return BranchRepository(apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImmersionUserRepository(apolloClient: ApolloClient): ACRURepository<User, SignInMutation.Data, Boolean, Boolean, UpdateUserMutation.Data> {
+        return UserRepository(apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImmersionAuthorizationRepository(apolloClient: ApolloClient): IAuthorizationRepository {
+        return AuthorizationRepository(apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImmersionDataStoreRepository(@ApplicationContext context: Context): IDataStoreRepository {
+        return DataStoreRepository(context)
     }
 
     /*@Provides

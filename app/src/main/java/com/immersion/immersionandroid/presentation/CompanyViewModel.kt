@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class CompanyViewModel @Inject constructor(private val companyRepository: ACRURepository<Company, AddCompanyMutation.Data>) :
+class CompanyViewModel @Inject constructor(private val companyRepository: ACRURepository<Company, AddCompanyMutation.Data, Boolean, Boolean, AddCompanyMutation.Data>) :
     ViewModel() {
 
     suspend fun createCompany(name: String, description: String?) {

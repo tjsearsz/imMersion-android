@@ -141,14 +141,9 @@ input CreateUserInput {
   email: String!
 
   """
-  First name of the new user
+  Flag to determine whether user is a Business owner or not
   """
-  firstName: String!
-
-  """
-  Last name of the user
-  """
-  lastName: String!
+  isBusinessOwner: Boolean! = false
 
   """
   Password of the new User
@@ -370,19 +365,9 @@ input UpdateUserInput {
   email: String!
 
   """
-  First name of the new user
+  Flag to determine whether user is a Business owner or not
   """
-  firstName: String!
-
-  """
-  ID of the user
-  """
-  id: String!
-
-  """
-  Last name of the user
-  """
-  lastName: String!
+  isBusinessOwner: Boolean!
 }
 
 type User {
@@ -392,14 +377,9 @@ type User {
   email: String!
 
   """
-  First Name of the user
+  Flag to determine whether user is a Business owner or not
   """
-  firstName: String!
-
-  """
-  Last name of the user
-  """
-  lastName: String!
+  isBusinessOwner: Boolean!
 }
 
 """

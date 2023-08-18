@@ -1,0 +1,11 @@
+mutation signIn($input: CreateUserInput!){
+    signIn(createUserInput: $input){
+        email
+    }
+}
+
+mutation updateUser($input: UpdateUserInput!){
+    updateUser(updateUserInput: $input){
+        isBusinessOwner
+    }
+}

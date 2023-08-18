@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -18,7 +18,16 @@
         android:theme="@style/Theme.ImMersionAndroid"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.CreateUserActivity"
+            android:exported="false" />
+        <!--
+             <activity
+            android:name=".ui.ARActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="locked" />
+        -->
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -33,21 +42,24 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD3XsmM7yZStRJQ3e8X_D7tnctLwh6uxAI" />
-
-        <!--<activity
+        <!--
+<activity
             android:name=".ui.CreateBranchMapsActivity"
             android:exported="false"
-            android:label="@string/title_activity_create_branch_maps" /> -->
+            android:label="@string/title_activity_create_branch_maps" />
+        -->
         <!--
          <activity
             android:name=".ui.CreateCompanyActivity"
-            android:exported="false" /> -->
+            android:exported="false" />
+        -->
         <!--
         <activity
             android:name=".ui.CreateJobActivity"
-            android:exported="false" /> -->
+            android:exported="false" />
+        -->
         <activity
-            android:name=".ui.CreateBranchMapsActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,7 +67,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       <!-- <activity
+        <!--
+ <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
@@ -75,7 +88,10 @@
             <intent-filter>
                 <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
             </intent-filter>
-            <meta-data android:name="photopicker_activity:0:required" android:value="" />
+
+            <meta-data
+                android:name="photopicker_activity:0:required"
+                android:value="" />
         </service>
     </application>
 
