@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_user_nav_graph"
+    app:startDestination="@id/createUserBasicInfoFragment">
+
+    <fragment
+        android:id="@+id/createUserBasicInfoFragment"
+        android:name="com.immersion.immersionandroid.ui.CreateUserBasicInfoFragment"
+        android:label="fragment_create_user_basic_info"
+        tools:layout="@layout/fragment_create_user_basic_info" >
+        <action
+            android:id="@+id/action_createUserBasicInfoFragment_to_createUserIntentFragment"
+            app:destination="@id/createUserIntentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createUserIntentFragment"
+        android:name="com.immersion.immersionandroid.ui.CreateUserIntentFragment"
+        android:label="fragment_create_user_intent"
+        tools:layout="@layout/fragment_create_user_intent" />
+</navigation>
