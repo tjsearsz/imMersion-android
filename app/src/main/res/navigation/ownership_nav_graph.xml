@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ownership_nav_graph"
+    app:startDestination="@id/companyListFragment">
+
+    <fragment
+        android:id="@+id/companyListFragment"
+        android:name="com.immersion.immersionandroid.ui.CompanyListFragment"
+        android:label="fragment_company_list"
+        tools:layout="@layout/fragment_company_list" >
+        <action
+            android:id="@+id/action_companyListFragment_to_branchListFragment"
+            app:destination="@id/branchListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/branchListFragment"
+        android:name="com.immersion.immersionandroid.ui.BranchListFragment"
+        android:label="fragment_branch_list"
+        tools:layout="@layout/fragment_branch_list" >
+        <action
+            android:id="@+id/action_branchListFragment_to_jobListFragment"
+            app:destination="@id/jobListFragment" />
+        <argument
+            android:name="companyId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/jobListFragment"
+        android:name="com.immersion.immersionandroid.ui.JobListFragment"
+        android:label="fragment_job_list"
+        tools:layout="@layout/fragment_job_list" >
+        <argument
+            android:name="branchId"
+            app:argType="string" />
+    </fragment>
+</navigation>

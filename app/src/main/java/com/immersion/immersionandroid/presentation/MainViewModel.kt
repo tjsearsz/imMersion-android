@@ -3,19 +3,20 @@ package com.immersion.immersionandroid.presentation
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.SignInMutation
 import com.immersion.UpdateUserMutation
-import com.immersion.immersionandroid.dataAccess.ACRURepository
+import com.immersion.immersionandroid.dataAccess.ACRUImmersionRepository
 import com.immersion.immersionandroid.dataAccess.IDataStoreRepository
-import com.immersion.immersionandroid.dataAccess.IAuthorizationRepository
+import com.immersion.immersionandroid.dataAccess.IAuthorizationImmersionRepository
 import com.immersion.immersionandroid.domain.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val userRepository: ACRURepository<User, SignInMutation.Data, Boolean, Boolean, UpdateUserMutation.Data>,
-    private val authorizationRepository: IAuthorizationRepository,
+    private val userRepository: ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetAllAugmentedImagesQuery.Data, Boolean, Unit>,
+    private val authorizationRepository: IAuthorizationImmersionRepository,
     private val dataStoreRepository: IDataStoreRepository
 ) :
     ViewModel() {

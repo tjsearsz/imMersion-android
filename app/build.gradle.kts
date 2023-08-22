@@ -8,6 +8,8 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 
+    id("kotlin-parcelize")
+
 }
 
 kapt {
@@ -103,4 +105,6 @@ dependencies {
 
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
 }

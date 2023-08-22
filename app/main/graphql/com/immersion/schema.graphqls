@@ -56,19 +56,9 @@ scalar Boolean
 
 type Branch {
   """
-  ID of the company
-  """
-  _id: ID!
-
-  """
   Address of the branch
   """
   address: [Float!]!
-
-  """
-  Company where this branch belongs
-  """
-  immediateAncestor: String!
 
   """
   Determines whether this branch is still available or not
@@ -77,11 +67,6 @@ type Branch {
 }
 
 type Company {
-  """
-  ID of the company
-  """
-  _id: ID!
-
   """
   Brief information about the company
   """
@@ -142,6 +127,11 @@ input CreateJobInput {
   Title of the new Job
   """
   name: String!
+
+  """
+  URL to redirect if available
+  """
+  redirectURL: String
 }
 
 input CreateUserInput {
@@ -167,32 +157,17 @@ The `Float` scalar type represents signed double-precision fractional values as 
 scalar Float
 
 """
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-"""
-scalar ID
-
-"""
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 """
 scalar Int
 
 type Job {
-  """
-  ID of the Job
-  """
-  _id: ID!
-
   augmentedImage: AugmentedImage!
 
   """
   Complete description of the job
   """
   description: String!
-
-  """
-  Branch where this job belongs
-  """
-  immediateAncestor: String!
 
   """
   Determines whether the job is active or not
@@ -203,6 +178,11 @@ type Job {
   Title of the job
   """
   name: String!
+
+  """
+  URL to redirect if available
+  """
+  redirectURL: String
 }
 
 """
@@ -381,6 +361,11 @@ input UpdateJobInput {
   Title of the new Job
   """
   name: String!
+
+  """
+  URL to redirect if available
+  """
+  redirectURL: String
 }
 
 input UpdateUserInput {

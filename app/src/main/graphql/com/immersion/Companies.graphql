@@ -2,5 +2,14 @@ mutation addCompany($input: CreateCompanyInput!) {
     createCompany(createCompanyInput: $input){
         name
         description
+        _id
+    }
+}
+
+query getCompanies {
+    userCompanies{
+        description,
+        name,
+        _id
     }
 }

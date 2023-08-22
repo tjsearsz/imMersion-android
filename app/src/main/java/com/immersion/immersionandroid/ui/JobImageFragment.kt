@@ -1,6 +1,7 @@
 package com.immersion.immersionandroid.ui
 
 import android.R.attr
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -45,13 +46,15 @@ class JobImageFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentJobImageBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val branchId = requireActivity().intent.extras!!.getString("branchId")!!
 
         binding.createJobButton.setOnClickListener {
 
@@ -66,9 +69,13 @@ class JobImageFragment : Fragment() {
 
             if (proceedWithCreation)
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.createNewJob()
+                    val newJob = viewModel.createNewJob(branchId)
                     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                        Log.d("TESTING", "hola")
+                        if(newJob != null){
+                            val intent = Intent().putExtra("entity", newJob)
+                            requireActivity().setResult(Activity.RESULT_OK,intent)
+                            requireActivity().finish()
+                        }
                     }
                 }
             else

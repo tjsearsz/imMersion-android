@@ -13,6 +13,7 @@ import com.immersion.immersionandroid.databinding.FragmentJobImageBinding
 import com.immersion.immersionandroid.presentation.MainViewModel
 import com.immersion.immersionandroid.ui.CreateUserActivity
 import com.immersion.immersionandroid.ui.FragmentAR
+import com.immersion.immersionandroid.ui.OwnershipActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.utils.setFullScreen
 import kotlinx.coroutines.Dispatchers
@@ -40,13 +41,15 @@ class MainActivity : AppCompatActivity() {
         binding.logIn.setOnClickListener {
 
             lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.logIn(
+                val successfulLogin = viewModel.logIn(
                     binding.editTextTextEmailAddress.text.toString(),
                     binding.editTextTextPassword.text.toString()
                 )
 
                 lifecycleScope.launch(Dispatchers.Main){
-                    Toast.makeText(applicationContext, "LOGGED SUCCESSFULLY", Toast.LENGTH_SHORT).show()
+                    Intent(applicationContext, OwnershipActivity::class.java).also{
+                        startActivity(it)
+                    }
                 }
             }
 

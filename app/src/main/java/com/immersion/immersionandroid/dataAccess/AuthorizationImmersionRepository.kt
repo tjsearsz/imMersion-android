@@ -6,7 +6,7 @@ import com.immersion.LogInMutation
 import com.immersion.immersionandroid.domain.User
 import com.immersion.type.LoginUserInput
 
-class AuthorizationRepository(private val apolloClient: ApolloClient) : IAuthorizationRepository {
+class AuthorizationImmersionRepository(private val apolloClient: ApolloClient) : IAuthorizationImmersionRepository {
 
     override suspend fun logIn(user: User): String {
 

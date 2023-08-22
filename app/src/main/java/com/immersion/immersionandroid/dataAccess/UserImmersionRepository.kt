@@ -5,15 +5,16 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Optional
-import com.immersion.AddBranchMutation
+import com.apollographql.apollo3.api.Query
+import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.SignInMutation
 import com.immersion.UpdateUserMutation
 import com.immersion.immersionandroid.domain.User
 import com.immersion.type.CreateUserInput
 import com.immersion.type.UpdateUserInput
 
-class UserRepository(apolloClient: ApolloClient) :
-    ACRURepository<User, SignInMutation.Data, Boolean, Boolean, UpdateUserMutation.Data>(
+class UserImmersionRepository(apolloClient: ApolloClient) :
+    ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetAllAugmentedImagesQuery.Data, Boolean, Unit>(
         apolloClient
     ) {
 
@@ -38,10 +39,20 @@ class UserRepository(apolloClient: ApolloClient) :
     }
 
     override fun handleUpdateResponse(response: ApolloResponse<UpdateUserMutation.Data>?): Boolean {
-        if(response !== null && !response.hasErrors()){
+        if (response !== null && !response.hasErrors()) {
             return true
         }
 
         return false
     }
+
+    override fun prepareRead(parameters: Unit): Query<GetAllAugmentedImagesQuery.Data> {
+        TODO("Not yet implemented")
+    }
+
+    override fun handleReadResponse(response: ApolloResponse<GetAllAugmentedImagesQuery.Data>?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+
 }

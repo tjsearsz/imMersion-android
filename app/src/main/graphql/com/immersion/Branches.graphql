@@ -2,5 +2,16 @@ mutation addBranch($input: CreateBranchInput!) {
     createBranch(createBranchInput: $input){
         address
         isEnabled
+        _id
+        immediateAncestor
+    }
+}
+
+query getBranches($input: String!) {
+    companyBranches(companyId: $input){
+        address
+        isEnabled
+        immediateAncestor
+        _id
     }
 }

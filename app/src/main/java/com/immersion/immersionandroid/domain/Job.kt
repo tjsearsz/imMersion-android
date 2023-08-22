@@ -1,11 +1,17 @@
 package com.immersion.immersionandroid.domain
 
-import java.net.URI
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
+@Parcelize
 data class Job(
     val name: String,
     val description: String,
-    val redirectURL: URI?,
     val augmentedImage: AugmentedImage,
-    val branchId: String
-)
+    val branchId: String,
+    override val id: String
+) : IEmployerOwnerShip {
+    override fun toString(): String {
+        return this.name
+    }
+}

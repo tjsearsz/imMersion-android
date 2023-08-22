@@ -1,10 +1,26 @@
 mutation addJob($input: CreateJobInput!){
     createJob(createJobInput: $input){
         name
-        isEnabled
+        _id
         augmentedImage{
             redirectURL
             imageURL
+            modelURL
+        }
+        description
+        immediateAncestor
+    }
+}
+
+query getJobs($input: String!){
+    branchJobs(branchId: $input){
+        name
+        immediateAncestor
+        _id
+        description,
+        augmentedImage{
+            imageURL
+            redirectURL
             modelURL
         }
     }
