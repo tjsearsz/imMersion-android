@@ -3,12 +3,10 @@ package com.immersion.immersionandroid.di
 import android.content.Context
 import com.apollographql.apollo3.ApolloClient
 import com.immersion.immersionandroid.AuthorizationInterceptor
-import com.immersion.immersionandroid.dataAccess.ACRURepository
-import com.immersion.immersionandroid.dataAccess.ApolloAugmentedImageClient
+import com.immersion.immersionandroid.dataAccess.ACRUImmersionRepository
 import com.immersion.immersionandroid.dataAccess.FileStackDataSource
 import com.immersion.immersionandroid.dataAccess.IFilestackDataSource
-import com.immersion.immersionandroid.dataAccess.IJobRepository
-import com.immersion.immersionandroid.dataAccess.JobRepository
+import com.immersion.immersionandroid.dataAccess.JobImmersionRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,17 +16,24 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import com.immersion.AddBranchMutation
 import com.immersion.AddCompanyMutation
+import com.immersion.AddJobMutation
+import com.immersion.GetAllAugmentedImagesQuery
+import com.immersion.GetBranchesQuery
+import com.immersion.GetCompaniesQuery
+import com.immersion.GetJobsQuery
 import com.immersion.SignInMutation
 import com.immersion.UpdateUserMutation
-import com.immersion.immersionandroid.dataAccess.AuthorizationRepository
-import com.immersion.immersionandroid.dataAccess.BranchRepository
-import com.immersion.immersionandroid.dataAccess.CompanyRepository
+import com.immersion.immersionandroid.dataAccess.AuthorizationImmersionRepository
+import com.immersion.immersionandroid.dataAccess.BranchImmersionRepository
+import com.immersion.immersionandroid.dataAccess.CompanyImmersionRepository
 import com.immersion.immersionandroid.dataAccess.DataStoreRepository
-import com.immersion.immersionandroid.dataAccess.IAuthorizationRepository
+import com.immersion.immersionandroid.dataAccess.IAuthorizationImmersionRepository
 import com.immersion.immersionandroid.dataAccess.IDataStoreRepository
-import com.immersion.immersionandroid.dataAccess.UserRepository
+import com.immersion.immersionandroid.dataAccess.UserImmersionRepository
 import com.immersion.immersionandroid.domain.Branch
 import com.immersion.immersionandroid.domain.Company
+import com.immersion.immersionandroid.domain.IEmployerOwnerShip
+import com.immersion.immersionandroid.domain.Job
 import com.immersion.immersionandroid.domain.User
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -64,32 +69,32 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideImmersionJobRepository(apolloClient: ApolloClient): IJobRepository {
-        return JobRepository(apolloClient)
+    fun provideImmersionJobRepository(apolloClient: ApolloClient): ACRUImmersionRepository<Job, AddJobMutation.Data, IEmployerOwnerShip?, AddJobMutation.Data, Boolean, GetJobsQuery.Data, List<IEmployerOwnerShip>, String> {
+        return JobImmersionRepository(apolloClient)
     }
 
     @Provides
     @Singleton
-    fun provideImmersionCompanyRepository(apolloClient: ApolloClient): ACRURepository<Company, AddCompanyMutation.Data, Boolean, Boolean, AddCompanyMutation.Data> {
-        return CompanyRepository(apolloClient)
+    fun provideImmersionCompanyRepository(apolloClient: ApolloClient): ACRUImmersionRepository<Company, AddCompanyMutation.Data, IEmployerOwnerShip?, AddCompanyMutation.Data, Boolean, GetCompaniesQuery.Data, List<IEmployerOwnerShip>, Unit> {
+        return CompanyImmersionRepository(apolloClient)
     }
 
     @Provides
     @Singleton
-    fun provideImmersionBranchRepository(apolloClient: ApolloClient): ACRURepository<Branch, AddBranchMutation.Data, Boolean, Boolean, AddBranchMutation.Data> {
-        return BranchRepository(apolloClient)
+    fun provideImmersionBranchRepository(apolloClient: ApolloClient): ACRUImmersionRepository<Branch, AddBranchMutation.Data, IEmployerOwnerShip?, AddBranchMutation.Data, Boolean, GetBranchesQuery.Data, List<IEmployerOwnerShip>, String> {
+        return BranchImmersionRepository(apolloClient)
     }
 
     @Provides
     @Singleton
-    fun provideImmersionUserRepository(apolloClient: ApolloClient): ACRURepository<User, SignInMutation.Data, Boolean, Boolean, UpdateUserMutation.Data> {
-        return UserRepository(apolloClient)
+    fun provideImmersionUserRepository(apolloClient: ApolloClient): ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetAllAugmentedImagesQuery.Data, Boolean, Unit> {
+        return UserImmersionRepository(apolloClient)
     }
 
     @Provides
     @Singleton
-    fun provideImmersionAuthorizationRepository(apolloClient: ApolloClient): IAuthorizationRepository {
-        return AuthorizationRepository(apolloClient)
+    fun provideImmersionAuthorizationRepository(apolloClient: ApolloClient): IAuthorizationImmersionRepository {
+        return AuthorizationImmersionRepository(apolloClient)
     }
 
     @Provides

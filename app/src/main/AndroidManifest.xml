@@ -19,6 +19,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.OwnershipActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.CreateUserActivity"
             android:exported="false" />
         <!--
@@ -42,22 +45,22 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD3XsmM7yZStRJQ3e8X_D7tnctLwh6uxAI" />
-        <!--
-<activity
+
+        <activity
             android:name=".ui.CreateBranchMapsActivity"
             android:exported="false"
             android:label="@string/title_activity_create_branch_maps" />
-        -->
-        <!--
-         <activity
+
+
+        <activity
             android:name=".ui.CreateCompanyActivity"
             android:exported="false" />
-        -->
-        <!--
+
+
         <activity
             android:name=".ui.CreateJobActivity"
             android:exported="false" />
-        -->
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -81,7 +84,8 @@
         </activity>-->
 
         <!--suppress AndroidDomInspection -->
-        <service android:name="com.google.android.gms.metadata.ModuleDependencies"
+        <service
+            android:name="com.google.android.gms.metadata.ModuleDependencies"
             android:enabled="false"
             android:exported="false"
             tools:ignore="MissingClass">

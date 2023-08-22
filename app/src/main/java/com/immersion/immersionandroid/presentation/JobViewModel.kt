@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.immersion.immersionandroid.dataAccess.FileStackDataSource
-import com.immersion.immersionandroid.dataAccess.IJobRepository
 import com.immersion.immersionandroid.domain.AugmentedImage
 import com.immersion.immersionandroid.domain.Job
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,12 +12,18 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayOutputStream
 import android.net.Uri
 import android.util.Patterns
+import androidx.fragment.app.activityViewModels
+import com.immersion.AddJobMutation
+import com.immersion.GetAllAugmentedImagesQuery
+import com.immersion.GetJobsQuery
+import com.immersion.immersionandroid.dataAccess.ACRUImmersionRepository
+import com.immersion.immersionandroid.domain.IEmployerOwnerShip
 import javax.inject.Inject
 
 @HiltViewModel
 class JobViewModel @Inject constructor(
     private val filestackRepository: FileStackDataSource,
-    private val jobRepository: IJobRepository,
+    private val jobRepository: ACRUImmersionRepository<Job, AddJobMutation.Data, IEmployerOwnerShip?, AddJobMutation.Data, Boolean, GetJobsQuery.Data, List<IEmployerOwnerShip>, String>,
     @ApplicationContext val context: Context //TODO: CHECK THIS MAYBE IT IS NOT NEEDED ANYMORE
 ) :
     ViewModel() {
@@ -42,7 +47,7 @@ class JobViewModel @Inject constructor(
         mutableImageBitmap.value = bitmap
     }
 
-    suspend fun createNewJob() {
+    suspend fun createNewJob(branchId: String): IEmployerOwnerShip? {
 
         val byteArra = createByteArrayFromBitmap()
         var response = filestackRepository.uploadImage(byteArra)
@@ -57,11 +62,11 @@ class JobViewModel @Inject constructor(
         val newJob = Job(
             mutableNewJobName.value!!,
             mutableNewJobDescription.value!!,
-            null,
             newAugmentedRealityImage,
-            "64b853ba0497f2758c7a8281"
+            branchId,
+            ""
         )
-        this.jobRepository.createJob(newJob)
+        return this.jobRepository.create(newJob)
     }
 
     fun validateUrl(intendedUrl: String): Boolean {
@@ -80,6 +85,10 @@ class JobViewModel @Inject constructor(
         val bitmapdata = bos.toByteArray();
 
         return bitmapdata
+    }
+
+    suspend fun branchJobs(branchId: String): MutableList<IEmployerOwnerShip> {
+        return this.jobRepository.read(branchId).toMutableList()
     }
 
 }

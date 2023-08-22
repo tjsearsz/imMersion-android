@@ -1,6 +1,10 @@
 package com.immersion.immersionandroid.domain
 
-class Company(val name: String, val description: String?) : IEmployeeOwnerShip {
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class Company(val name: String, val description: String?, override val id: String) :
+    IEmployerOwnerShip {
 
     //TODO: This should be added when doing the get
     /*private lateinit var branchList: ArrayList<IEmployeeOwnerShip>
@@ -9,4 +13,7 @@ class Company(val name: String, val description: String?) : IEmployeeOwnerShip {
         this.branchList = branches
     }*/
 
+    override fun toString(): String {
+        return this.name
+    }
 }

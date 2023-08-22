@@ -2,6 +2,6 @@ package com.immersion.immersionandroid.dataAccess
 
 import com.immersion.immersionandroid.domain.User
 
-interface IAuthorizationRepository: IRepository {
+interface IAuthorizationImmersionRepository: IImmersionRepository {
     suspend fun logIn(user: User): String
 }

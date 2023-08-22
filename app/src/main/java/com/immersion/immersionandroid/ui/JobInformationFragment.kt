@@ -20,7 +20,7 @@ class JobInformationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentJobInformationBinding.inflate(inflater, container, false)
         return binding.root

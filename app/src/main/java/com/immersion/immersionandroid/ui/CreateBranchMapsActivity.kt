@@ -1,5 +1,7 @@
 package com.immersion.immersionandroid.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -37,12 +39,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.utils.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.MapsInitializer.Renderer
+
 
 @AndroidEntryPoint
 class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityCreateBranchMapsBinding
+    private var _binding: ActivityCreateBranchMapsBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var currentLocation: Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -56,7 +62,13 @@ class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityCreateBranchMapsBinding.inflate(layoutInflater)
+        val companyId = intent.extras!!.getString("companyId")!!
+
+        MapsInitializer.initialize(this, Renderer.LATEST) {
+            Log.d("imMersion", "onMapsSdkInitialized: ${it.name}");
+        }
+
+        _binding = ActivityCreateBranchMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         Places.initialize(
@@ -87,7 +99,15 @@ class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.floatingActionButton.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.createBranch()
+                val branch = viewModel.createBranch(companyId)
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if (branch != null) {
+                        val resultIntent = Intent().putExtra("entity", branch)
+                        setResult(Activity.RESULT_OK, resultIntent)
+                        finish()
+                    }
+                }
             }
         }
 
@@ -250,4 +270,8 @@ class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }
