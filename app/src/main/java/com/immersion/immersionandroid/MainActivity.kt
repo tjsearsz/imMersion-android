@@ -3,19 +3,13 @@ package com.immersion.immersionandroid
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.immersion.immersionandroid.databinding.ActivityMainBinding
-import com.immersion.immersionandroid.databinding.FragmentJobImageBinding
 import com.immersion.immersionandroid.presentation.MainViewModel
 import com.immersion.immersionandroid.ui.CreateUserActivity
-import com.immersion.immersionandroid.ui.FragmentAR
 import com.immersion.immersionandroid.ui.OwnershipActivity
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.sceneview.utils.setFullScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

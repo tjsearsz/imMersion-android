@@ -7,7 +7,6 @@ import kotlinx.parcelize.RawValue
 data class Job(
     val name: String,
     val description: String,
-    val augmentedImage: AugmentedImage,
     val branchId: String,
     override val id: String
 ) : IEmployerOwnerShip {

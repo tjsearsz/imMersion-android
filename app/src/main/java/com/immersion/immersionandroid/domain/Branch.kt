@@ -5,7 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Branch(
-    val address: LatLng, val companyId: String, val isEnabled: Boolean = false,
+    val address: LatLng,
+    val augmentedImage: AugmentedImage,
+    val companyId: String,
+    val isEnabled: Boolean = false,
     override val id: String
 ) :
     IEmployerOwnerShip {

@@ -23,10 +23,12 @@ import com.immersion.GetCompaniesQuery
 import com.immersion.GetJobsQuery
 import com.immersion.SignInMutation
 import com.immersion.UpdateUserMutation
+import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.AuthorizationImmersionRepository
 import com.immersion.immersionandroid.dataAccess.BranchImmersionRepository
 import com.immersion.immersionandroid.dataAccess.CompanyImmersionRepository
 import com.immersion.immersionandroid.dataAccess.DataStoreRepository
+import com.immersion.immersionandroid.dataAccess.IAugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.IAuthorizationImmersionRepository
 import com.immersion.immersionandroid.dataAccess.IDataStoreRepository
 import com.immersion.immersionandroid.dataAccess.UserImmersionRepository
@@ -103,9 +105,9 @@ object AppModule {
         return DataStoreRepository(context)
     }
 
-    /*@Provides
+    @Provides
     @Singleton
-    fun provideAugmentedImageClient(apolloClient: ApolloClient): ApolloAugmentedImageClient {
-        return ApolloAugmentedImageClient(apolloClient)
-    }*/
+    fun provideAugmentedImageRepository(apolloClient: ApolloClient): IAugmentedImageRepository {
+        return AugmentedImageRepository(apolloClient)
+    }
 }

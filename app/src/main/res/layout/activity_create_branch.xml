@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CreateJobActivity">
+    tools:context=".ui.CreateBranchActivity">
 
     <!--<androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -53,57 +53,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/constraintLayout"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/map"
-        app:layout_constraintVertical_bias="0.0">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/autocomplete_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
-    </androidx.cardview.widget.CardView>
-
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/fragmentContainerCreateBranch"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.CreateBranchMapsActivity" />
-
-    <ImageView
-        android:id="@+id/ic_gps"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.956"
-        android:contentDescription="GPS Button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.0"
-        android:src="@drawable/ic_gps"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.926"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ic_gps"
-        app:layout_constraintVertical_bias="0.891"
-        android:contentDescription=" "
-        app:srcCompat="@drawable/ic_add_loc" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,9 +47,9 @@
             android:value="AIzaSyD3XsmM7yZStRJQ3e8X_D7tnctLwh6uxAI" />
 
         <activity
-            android:name=".ui.CreateBranchMapsActivity"
+            android:name=".ui.CreateBranchActivity"
             android:exported="false"
-            android:label="@string/title_activity_create_branch_maps" />
+            android:label="@string/title_activity_create_branch" />
 
 
         <activity

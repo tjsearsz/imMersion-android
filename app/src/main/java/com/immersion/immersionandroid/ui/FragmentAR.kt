@@ -1,38 +1,22 @@
 package com.immersion.immersionandroid.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.immersion.immersionandroid.R
-import com.immersion.immersionandroid.dataAccess.ApolloAugmentedImageClient
+import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
 import com.immersion.immersionandroid.domain.AugmentedImage
 // import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
-import dagger.hilt.android.AndroidEntryPoint
-import io.github.sceneview.SceneView
 import io.github.sceneview.ar.ArSceneView
-import io.github.sceneview.ar.BaseArFragment
-import io.github.sceneview.ar.arcore.ArSession
-import io.github.sceneview.ar.arcore.isTracking
-import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.AugmentedImageNode
-import io.github.sceneview.model.GLBLoader.loadModel
-import io.github.sceneview.node.ModelNode
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.URL
 import java.util.UUID
 
 
@@ -131,7 +115,7 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
                 lifecycleScope.launch(Dispatchers.IO) {
                     //   var bitmap = getBitmap(result.imageURL)
-                    val result = ApolloAugmentedImageClient().getAugmentedImages()
+                    val result = AugmentedImageRepository().getAugmentedImages()
 
                     lifecycleScope.launch(Dispatchers.Main) {
                         Log.d("debugging", "bitmapeee")

@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.immersion.immersionandroid.R
 import com.immersion.immersionandroid.databinding.FragmentCreateUserBasicInfoBinding
-import com.immersion.immersionandroid.databinding.FragmentJobInformationBinding
 import com.immersion.immersionandroid.presentation.JobViewModel
 import com.immersion.immersionandroid.presentation.MainViewModel
 import kotlinx.coroutines.Dispatchers

@@ -24,31 +24,18 @@ class JobImmersionRepository(apolloClient: ApolloClient) :
     ) {
 
     override fun prepareCreate(entity: Job): Mutation<AddJobMutation.Data> {
-        val arRedirectUrl =
-            if (entity.augmentedImage.redirectURL !== null) Optional.present(entity.augmentedImage.redirectURL.toString()) else Optional.absent()
 
-        val imageInput = AugmentedImageInput(
-            entity.augmentedImage.imageURL,
-            entity.augmentedImage.modelURL,
-            arRedirectUrl
-        )
 
         val createJobInput =
-            CreateJobInput(imageInput, entity.branchId, entity.description, entity.name)
+            CreateJobInput(entity.branchId, entity.description, entity.name)
         return AddJobMutation(createJobInput)
     }
 
     override fun handleCreateResponse(response: ApolloResponse<AddJobMutation.Data>?): IEmployerOwnerShip? {
         if (response !== null && !response.hasErrors()) {
-            val (name, _id, augmentedImage, description, immediateAncestor) = response.data!!.createJob
+            val (name, _id, description, immediateAncestor) = response.data!!.createJob
 
-            val parsedAugmentedImage = AugmentedImage(
-                augmentedImage.imageURL,
-                augmentedImage.modelURL,
-                imageURLToBitmap(augmentedImage.imageURL),
-                if(augmentedImage.redirectURL != null) Uri.parse(augmentedImage.redirectURL) else null
-            )
-            return Job(name, description, parsedAugmentedImage, immediateAncestor, _id)
+            return Job(name, description, immediateAncestor, _id)
         }
 
         return null
@@ -73,8 +60,7 @@ class JobImmersionRepository(apolloClient: ApolloClient) :
                     name = job.name,
                     id = job._id,
                     description = job.description,
-                    branchId = job.immediateAncestor,
-                    augmentedImage = job.augmentedImage.toAugmentedImageAndroid()
+                    branchId = job.immediateAncestor
                 )
             }
         }

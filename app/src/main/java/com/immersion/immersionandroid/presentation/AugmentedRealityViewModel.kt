@@ -1,22 +1,17 @@
 package com.immersion.immersionandroid.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.immersion.immersionandroid.dataAccess.ApolloAugmentedImageClient
+import com.google.android.gms.maps.model.LatLng
+import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
+import com.immersion.immersionandroid.dataAccess.IAugmentedImageRepository
 import com.immersion.immersionandroid.domain.AugmentedImage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/*@HiltViewModel
-class AugmentedRealityViewModel @Inject constructor(private val apolloAugmentedImageClient: ApolloAugmentedImageClient): ViewModel() {
+@HiltViewModel
+class AugmentedRealityViewModel @Inject constructor(private val augmentedImageRepository: IAugmentedImageRepository): ViewModel() {
 
-    private val _state: MutableStateFlow<AugmentedImagesState> = MutableStateFlow(AugmentedImagesState())
+    /*private val _state: MutableStateFlow<AugmentedImagesState> = MutableStateFlow(AugmentedImagesState())
     val state: StateFlow<AugmentedImagesState> = _state.asStateFlow()
 
     init {
@@ -28,6 +23,10 @@ class AugmentedRealityViewModel @Inject constructor(private val apolloAugmentedI
         }
     }
 
-    data class AugmentedImagesState(val augmentedImage: AugmentedImage? = null)
+    data class AugmentedImagesState(val augmentedImage: AugmentedImage? = null)*/
 
-}*/
+    suspend fun getBranchesWithOpenPositionsNearby(coordinates: LatLng): List<AugmentedImage>{
+        return this.augmentedImageRepository.getAugmentedImagesNearbyCoordinates(coordinates)
+    }
+
+}

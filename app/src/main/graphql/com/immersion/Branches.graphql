@@ -4,6 +4,11 @@ mutation addBranch($input: CreateBranchInput!) {
         isEnabled
         _id
         immediateAncestor
+        augmentedImage{
+            redirectURL
+            imageURL
+            modelURL
+        }
     }
 }
 
@@ -13,5 +18,20 @@ query getBranches($input: String!) {
         isEnabled
         immediateAncestor
         _id
+        augmentedImage{
+            imageURL
+            redirectURL
+            modelURL
+        }
+    }
+}
+
+query branchesWithOpenPositionsNearby($input: [Float!]!){
+    branchesWithOpenPositionsNearby(coordinates: $input){
+        augmentedImage{
+            imageURL
+            modelURL
+            redirectURL
+        }
     }
 }
