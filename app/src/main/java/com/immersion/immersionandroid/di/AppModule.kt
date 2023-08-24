@@ -23,10 +23,12 @@ import com.immersion.GetCompaniesQuery
 import com.immersion.GetJobsQuery
 import com.immersion.SignInMutation
 import com.immersion.UpdateUserMutation
+import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.AuthorizationImmersionRepository
 import com.immersion.immersionandroid.dataAccess.BranchImmersionRepository
 import com.immersion.immersionandroid.dataAccess.CompanyImmersionRepository
 import com.immersion.immersionandroid.dataAccess.DataStoreRepository
+import com.immersion.immersionandroid.dataAccess.IAugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.IAuthorizationImmersionRepository
 import com.immersion.immersionandroid.dataAccess.IDataStoreRepository
 import com.immersion.immersionandroid.dataAccess.UserImmersionRepository
@@ -46,7 +48,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApolloClient(dataStoreRepository: IDataStoreRepository): ApolloClient {
-        return ApolloClient.Builder().serverUrl("http://10.5.48.68:3000/graphql")
+        return ApolloClient.Builder().serverUrl("http://10.5.51.90:3000/graphql")
             .addHttpInterceptor(AuthorizationInterceptor(dataStoreRepository)).build()
     }
 
@@ -93,8 +95,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideImmersionAuthorizationRepository(apolloClient: ApolloClient): IAuthorizationImmersionRepository {
-        return AuthorizationImmersionRepository(apolloClient)
+    fun provideImmersionAuthorizationRepository(
+        apolloClient: ApolloClient,
+        dataStoreRepository: IDataStoreRepository
+    ): IAuthorizationImmersionRepository {
+        return AuthorizationImmersionRepository(apolloClient, dataStoreRepository)
     }
 
     @Provides
@@ -103,9 +108,9 @@ object AppModule {
         return DataStoreRepository(context)
     }
 
-    /*@Provides
+    @Provides
     @Singleton
-    fun provideAugmentedImageClient(apolloClient: ApolloClient): ApolloAugmentedImageClient {
-        return ApolloAugmentedImageClient(apolloClient)
-    }*/
+    fun provideAugmentedImageRepository(apolloClient: ApolloClient): IAugmentedImageRepository {
+        return AugmentedImageRepository(apolloClient)
+    }
 }

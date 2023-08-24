@@ -1,13 +1,11 @@
 package com.immersion.immersionandroid.ui
 
-import android.R.attr
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,47 +14,41 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.graphics.decodeBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.immersion.immersionandroid.R
-import com.immersion.immersionandroid.databinding.FragmentJobImageBinding
-import com.immersion.immersionandroid.presentation.JobViewModel
+import com.immersion.immersionandroid.databinding.FragmentBranchImageBinding
+import com.immersion.immersionandroid.presentation.BranchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.net.URI
 
 
 /**
  * A simple [Fragment] subclass.
- * Use the [JobImageFragment.newInstance] factory method to
+ * Use the [BranchImageFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 // @ToDo: Try to update the forked filestack api to stop using onactivity result
-class JobImageFragment : Fragment() {
+class BranchImageFragment : Fragment() {
 
-    private var _binding: FragmentJobImageBinding? = null
+    private var _binding: FragmentBranchImageBinding? = null
     private val binding get() = _binding!!
     private var imageBitmap: Bitmap? = null
-    private val viewModel: JobViewModel by activityViewModels<JobViewModel>()
+    private val viewModel: BranchViewModel by activityViewModels<BranchViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentJobImageBinding.inflate(inflater, container, false)
+        _binding = FragmentBranchImageBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val branchId = requireActivity().intent.extras!!.getString("branchId")!!
-
-        binding.createJobButton.setOnClickListener {
+        binding.createBranchButton.setOnClickListener {
 
             val intendedURL = binding.imageUrl.text.toString().trim()
 
@@ -69,10 +61,10 @@ class JobImageFragment : Fragment() {
 
             if (proceedWithCreation)
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                    val newJob = viewModel.createNewJob(branchId)
+                    val newBranch = viewModel.createBranch()
                     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                        if(newJob != null){
-                            val intent = Intent().putExtra("entity", newJob)
+                        if(newBranch != null){
+                            val intent = Intent().putExtra("entity", newBranch)
                             requireActivity().setResult(Activity.RESULT_OK,intent)
                             requireActivity().finish()
                         }
@@ -88,16 +80,16 @@ class JobImageFragment : Fragment() {
         }
 
         //@Todo: check in the code places where we should handle exceptions
-        val pickJobPhoto = registerForActivityResult(
+        val pickBranchPhoto = registerForActivityResult(
             ActivityResultContracts.PickVisualMedia(),
             this::handleImagePick
         )
 
         binding.selectImageButton.setOnClickListener {
-            pickJobPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickBranchPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        pickJobPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        pickBranchPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
     private fun handleImagePick(imageUri: Uri?) {
@@ -109,7 +101,7 @@ class JobImageFragment : Fragment() {
             viewModel.addImageBitmap(ImageDecoder.decodeBitmap(source))
             binding.imageView.setImageURI(imageUri)
 
-            binding.createJobButton.apply {
+            binding.createBranchButton.apply {
                 isClickable = true
                 isEnabled = true
             }
@@ -119,7 +111,7 @@ class JobImageFragment : Fragment() {
             binding.imageView.setImageURI(null)
             viewModel.addImageBitmap(null)
 
-            binding.createJobButton.apply {
+            binding.createBranchButton.apply {
                 isClickable = false
                 isEnabled = false
             }

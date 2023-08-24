@@ -3,20 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/jobInformationFragment">
-
+    app:startDestination="@id/branchInformationFragment">
     <fragment
-        android:id="@+id/jobInformationFragment"
-        android:name="com.immersion.immersionandroid.ui.JobInformationFragment"
-        android:label="fragment_job_information"
-        tools:layout="@layout/fragment_job_information" >
+        android:id="@+id/branchInformationFragment"
+        android:name="com.immersion.immersionandroid.ui.BranchMapsFragment"
+        android:label="fragment_branch_maps"
+        tools:layout="@layout/fragment_branch_maps" >
         <action
-            android:id="@+id/action_jobInformationFragment_to_jobImageFragment"
-            app:destination="@id/jobImageFragment" />
+            android:id="@+id/action_branchInformationFragment_to_branchImageFragment2"
+            app:destination="@id/branchImageFragment2" />
     </fragment>
     <fragment
-        android:id="@+id/jobImageFragment"
-        android:name="com.immersion.immersionandroid.ui.JobImageFragment"
-        android:label="fragment_job_image"
-        tools:layout="@layout/fragment_job_image" />
+        android:id="@+id/branchImageFragment2"
+        android:name="com.immersion.immersionandroid.ui.BranchImageFragment"
+        android:label="fragment_branch_image"
+        tools:layout="@layout/fragment_branch_image" />
 </navigation>

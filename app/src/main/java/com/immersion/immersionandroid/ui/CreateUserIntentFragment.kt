@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import com.immersion.immersionandroid.R
 import com.immersion.immersionandroid.databinding.FragmentCreateUserBasicInfoBinding
 import com.immersion.immersionandroid.databinding.FragmentCreateUserIntentBinding
-import com.immersion.immersionandroid.databinding.FragmentJobInformationBinding
 import com.immersion.immersionandroid.presentation.JobViewModel
 import com.immersion.immersionandroid.presentation.MainViewModel
 import kotlinx.coroutines.Dispatchers

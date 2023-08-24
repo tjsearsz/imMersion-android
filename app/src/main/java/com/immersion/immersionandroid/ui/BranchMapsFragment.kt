@@ -1,28 +1,25 @@
 package com.immersion.immersionandroid.ui
 
-import android.app.Activity
-import android.content.Intent
+import android.Manifest
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -33,50 +30,59 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.immersion.immersionandroid.R
-import com.immersion.immersionandroid.databinding.ActivityCreateBranchMapsBinding
+import com.immersion.immersionandroid.databinding.FragmentBranchMapsBinding
 import com.immersion.immersionandroid.presentation.BranchViewModel
-import dagger.hilt.android.AndroidEntryPoint
-import io.github.sceneview.utils.TAG
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.MapsInitializer.Renderer
 
-
-@AndroidEntryPoint
-class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class BranchMapsFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private var _binding: ActivityCreateBranchMapsBinding? = null
+    private var _binding: FragmentBranchMapsBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var currentLocation: Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var marker: Marker
     private lateinit var autoCompleteFragment: AutocompleteSupportFragment
-    private val viewModel: BranchViewModel by viewModels()
+    private val viewModel: BranchViewModel by activityViewModels<BranchViewModel>()
+
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     private val PERMISSION_CODE = 101
     private val DEFAULT_ZOOM = 15f
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        _binding = FragmentBranchMapsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val companyId = intent.extras!!.getString("companyId")!!
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        MapsInitializer.initialize(this, Renderer.LATEST) {
+        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST) {
             Log.d("imMersion", "onMapsSdkInitialized: ${it.name}");
         }
 
-        _binding = ActivityCreateBranchMapsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setUpMapsLogic()
 
+        binding.floatingActionButton.setOnClickListener {
+
+            val action =
+                BranchMapsFragmentDirections.actionBranchInformationFragmentToBranchImageFragment2()
+            view.findNavController().navigate(action)
+        }
+    }
+
+    private fun setUpMapsLogic() {
         Places.initialize(
-            this,
+            requireContext(),
             "AIzaSyD3XsmM7yZStRJQ3e8X_D7tnctLwh6uxAI"
         ) //TODO: MOVE THIS BETTER PLACE
         autoCompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
+            childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
         autoCompleteFragment.setPlaceFields(
             listOf(
                 Place.Field.ID,
@@ -97,24 +103,19 @@ class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         })
 
-        binding.floatingActionButton.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val branch = viewModel.createBranch(companyId)
-
-                lifecycleScope.launch(Dispatchers.Main) {
-                    if (branch != null) {
-                        val resultIntent = Intent().putExtra("entity", branch)
-                        setResult(Activity.RESULT_OK, resultIntent)
-                        finish()
-                    }
-                }
-            }
-        }
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
 
         binding.icGps.setOnClickListener {
             getCurrentLocationOfUser()
+        }
+
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+            isGranted ->
+
+            if(isGranted){
+                getCurrentLocationOfUser()
+            }
         }
 
 
@@ -124,6 +125,60 @@ class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
          mapFragment.getMapAsync(this)*/
 
         getCurrentLocationOfUser()
+    }
+
+   /* override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+
+            PERMISSION_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                getCurrentLocationOfUser()
+            }
+        }
+    }*/
+
+    private fun askForGPSPermission(){
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    private fun getCurrentLocationOfUser() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+           /* ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSION_CODE
+            )*/
+
+            askForGPSPermission()
+
+            return
+        }
+
+        val getLocation =
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+
+                if (location != null) {
+
+                    currentLocation = location
+
+                    val mapFragment =
+                        childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
+                    mapFragment.getMapAsync(this)
+                }
+            }
     }
 
     /* private fun actionSearchInit() {
@@ -177,53 +232,6 @@ class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
      }*/
 
-    private fun getCurrentLocationOfUser() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSION_CODE
-            )
-
-            return
-        }
-
-        val getLocation =
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-
-                if (location != null) {
-
-                    currentLocation = location
-
-                    val mapFragment = supportFragmentManager
-                        .findFragmentById(R.id.map) as SupportMapFragment
-                    mapFragment.getMapAsync(this)
-                }
-            }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-
-            PERMISSION_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                getCurrentLocationOfUser()
-            }
-        }
-    }
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -270,8 +278,8 @@ class CreateBranchMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

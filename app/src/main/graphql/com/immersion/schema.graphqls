@@ -65,6 +65,8 @@ type Branch {
   """
   address: [Float!]!
 
+  augmentedImage: AugmentedImage!
+
   """
   Company where this branch belongs
   """
@@ -74,6 +76,11 @@ type Branch {
   Determines whether this branch is still available or not
   """
   isEnabled: Boolean!
+
+  """
+  Jobs that belong to this branch
+  """
+  jobs: [Job!]!
 }
 
 type Company {
@@ -105,6 +112,11 @@ input CreateBranchInput {
   address: [Float!]!
 
   """
+  Augmented Image for this Job
+  """
+  augmentedImage: AugmentedImageInput!
+
+  """
   Company where this branch belongs to
   """
   companyId: String!
@@ -123,11 +135,6 @@ input CreateCompanyInput {
 }
 
 input CreateJobInput {
-  """
-  Augmented Image for this Job
-  """
-  augmentedImage: AugmentedImageInput!
-
   """
   Branch where this Job will be executed
   """
@@ -181,8 +188,6 @@ type Job {
   ID of the Job
   """
   _id: ID!
-
-  augmentedImage: AugmentedImage!
 
   """
   Complete description of the job
@@ -256,8 +261,6 @@ type Mutation {
 
   signIn(createUserInput: CreateUserInput!): User!
 
-  updateAugmentedImage("AugmentedImage to be updated in a job" augmentedImageInput: UpdateJobImageInput!): Job!
-
   updateBranch(updateBranchInput: UpdateBranchInput!): Branch!
 
   updateCompany(updateCompanyInput: UpdateCompanyInput!): Company!
@@ -274,6 +277,11 @@ type Query {
   All jobs in a single branch
   """
   branchJobs(branchId: String!): [Job!]!
+
+  """
+  Gets all the Branches that are within the radius of the given coordinates and have open postions
+  """
+  branchesWithOpenPositionsNearby("Coordinates LONGITUDE\/LATITUDE of the user" coordinates: [Float!]!): [Branch!]!
 
   """
   Gets all the branches based on the companyId
@@ -334,31 +342,6 @@ input UpdateCompanyInput {
   Name of the new company
   """
   name: String!
-}
-
-"""
-Data for updating the Augmented Image of a job
-"""
-input UpdateJobImageInput {
-  """
-  URL where the image of the new model is located
-  """
-  imageURL: String!
-
-  """
-  ID of the Job for this image
-  """
-  jobId: String!
-
-  """
-  URL for the model we want to create
-  """
-  modelURL: String!
-
-  """
-  URL where the user can click to get redirected to
-  """
-  redirectURL: String
 }
 
 input UpdateJobInput {

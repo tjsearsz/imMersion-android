@@ -1,20 +1,20 @@
 package com.immersion.immersionandroid.dataAccess
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
 import com.apollographql.apollo3.ApolloClient
+import com.google.android.gms.maps.model.LatLng
+import com.immersion.BranchesWithOpenPositionsNearbyQuery
 import com.immersion.GetAllAugmentedImagesQuery
+import com.immersion.LogInMutation
 import com.immersion.immersionandroid.domain.AugmentedImage
-import kotlinx.coroutines.delay
-import java.net.URL
+import com.immersion.type.LoginUserInput
 
-class ApolloAugmentedImageClient(//private val apolloClient:ApolloClient
-) : IAugmentedImageClient {
+class AugmentedImageRepository(private val apolloClient:ApolloClient
+) : IAugmentedImageRepository {
 
     //TODO: Change this to hilt
-    private val apolloClient: ApolloClient =
-        ApolloClient.Builder().serverUrl("http://10.5.50.146:3000/graphql").build()
+   // private val apolloClient: ApolloClient =
+     //   ApolloClient.Builder().serverUrl("http://10.5.48.68:3000/graphql").build()
     override suspend fun getAugmentedImages(): List<AugmentedImage> {
         Log.d("debugging", "consultado el ar!")
         // delay(5000L)
@@ -41,4 +41,23 @@ class ApolloAugmentedImageClient(//private val apolloClient:ApolloClient
         Log.d("debugging", "casi casi")
         return BitmapFactory.decodeStream(url.openStream())
     }*/
+
+    override suspend fun getAugmentedImagesNearbyCoordinates(coordinates: LatLng): List<AugmentedImage>{
+
+        val query = BranchesWithOpenPositionsNearbyQuery(listOf(coordinates.longitude, coordinates.latitude))
+
+        return try {
+            val response = this.executeQuery(query, this.apolloClient)
+
+            if (response != null)
+                return response.data!!.branchesWithOpenPositionsNearby.map {
+                    it.augmentedImage.toAugmentedImageAndroid()
+                }
+
+            emptyList()
+
+        } catch (error: SecurityException) {
+            emptyList()
+        }
+    }
 }

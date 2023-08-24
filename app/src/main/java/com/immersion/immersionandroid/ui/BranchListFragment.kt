@@ -16,10 +16,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.immersion.immersionandroid.databinding.FragmentBranchListBinding
 import com.immersion.immersionandroid.domain.Branch
-import com.immersion.immersionandroid.domain.Company
 import com.immersion.immersionandroid.domain.IEmployerOwnerShip
 import com.immersion.immersionandroid.presentation.BranchViewModel
-import com.immersion.immersionandroid.presentation.CompanyViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -69,7 +67,7 @@ class BranchListFragment : Fragment() {
 
         (activity as OwnershipActivity).setAddOwnershipFloatingButton {
 
-            val intent = Intent(context, CreateBranchMapsActivity::class.java)
+            val intent = Intent(context, CreateBranchActivity::class.java)
             intent.putExtra("companyId", parameters.companyId)
             resultLauncher.launch(intent)
         }
