@@ -59,7 +59,12 @@ class CreateUserBasicInfoFragment : Fragment() {
                             CreateUserBasicInfoFragmentDirections
                                 .actionCreateUserBasicInfoFragmentToCreateUserIntentFragment()
                         view.findNavController().navigate(action)
-                    }
+                    } else
+                        Toast.makeText(
+                            context,
+                            "There was an error. Please try again later",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
 
             }

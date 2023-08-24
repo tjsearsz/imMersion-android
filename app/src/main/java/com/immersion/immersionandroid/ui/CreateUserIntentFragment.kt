@@ -37,13 +37,23 @@ class CreateUserIntentFragment : Fragment() {
 
         binding.FinishButton.setOnClickListener {
 
-            if (true)
-                lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.setUserAsBusinessOwner()
-                    lifecycleScope.launch(Dispatchers.Main){
-                        Toast.makeText(activity, "type changed", Toast.LENGTH_LONG).show()
-                    }
+            lifecycleScope.launch(Dispatchers.IO) {
+
+                var finalMessage = "Account created successfully"
+                if (binding.radioButton2.isChecked) {
+
+                    val successfulChange = viewModel.setUserAsBusinessOwner()
+
+                    if (!successfulChange)
+                        finalMessage =
+                            "There was an error setting you as a business owner. Please try it on the settings menu"
+
                 }
+                lifecycleScope.launch(Dispatchers.Main) {
+                    Toast.makeText(activity, finalMessage, Toast.LENGTH_LONG).show()
+                    requireActivity().finish()
+                }
+            }
         }
     }
 
