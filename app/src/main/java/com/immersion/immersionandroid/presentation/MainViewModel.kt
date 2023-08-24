@@ -44,6 +44,8 @@ class MainViewModel @Inject constructor(
         return try {
             val isCreateUserSuccessful = this.userRepository.create(User(email, password))
             Log.d("TESTING", "EL RESULTADO DE CREAR $isCreateUserSuccessful")
+
+            //TODO: CURRENTLY I AM PERFORMING A LOGIN, BUT STILL REDIRECTING THE USER TO THE LOGIN SCREEN
             if (isCreateUserSuccessful) {
                 logIn(email, password)
                 mutableUserEmail.postValue(email)

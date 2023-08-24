@@ -3,6 +3,7 @@ package com.immersion.immersionandroid
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -63,12 +64,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
+        }
 
-            binding.register.setOnClickListener {
-
-                Intent(applicationContext, CreateUserActivity::class.java).also {
-                    startActivity(it)
-                }
+        binding.register.setOnClickListener {
+            Log.d("testing", "aca voy!!!!")
+            Intent(applicationContext, CreateUserActivity::class.java).also {
+                startActivity(it)
             }
         }
     }

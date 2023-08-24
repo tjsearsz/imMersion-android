@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.immersion.immersionandroid.databinding.ActivityCreateJobBinding
@@ -28,16 +30,16 @@ class CreateJobActivity : AppCompatActivity() {
 
         val branchId = intent.extras!!.getString("branchId")!!
 
-        binding.nextButton.setOnClickListener {
+        binding.createJobButton.setOnClickListener {
             viewModel.addJobNameAndDescription(
-                binding.editTextText.text.toString(),
-                binding.editTextTextMultiLine.text.toString()
+                binding.jobTitle.text.toString(),
+                binding.jobDescription.text.toString()
             )
 
             lifecycleScope.launch(Dispatchers.IO) {
                 val newJob = viewModel.createNewJob(branchId)
-                lifecycleScope.launch(Dispatchers.Main){
-                    if(newJob != null){
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if (newJob != null) {
                         val resultIntent = Intent().putExtra("entity", newJob)
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
@@ -45,6 +47,21 @@ class CreateJobActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.jobTitle.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                binding.createJobButton.isEnabled = s.toString().trim { it <= ' ' }.isNotEmpty()
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
     override fun onDestroy() {
