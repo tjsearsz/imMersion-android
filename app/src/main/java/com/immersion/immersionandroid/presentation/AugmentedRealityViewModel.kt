@@ -2,7 +2,6 @@ package com.immersion.immersionandroid.presentation
 
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
-import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.IAugmentedImageRepository
 import com.immersion.immersionandroid.domain.AugmentedImage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +24,7 @@ class AugmentedRealityViewModel @Inject constructor(private val augmentedImageRe
 
     data class AugmentedImagesState(val augmentedImage: AugmentedImage? = null)*/
 
-    suspend fun getBranchesWithOpenPositionsNearby(coordinates: LatLng): List<AugmentedImage>{
+    suspend fun getAugmentedRealitiesInOpenPositionsNearby(coordinates: LatLng): List<AugmentedImage>{
         return this.augmentedImageRepository.getAugmentedImagesNearbyCoordinates(coordinates)
     }
 

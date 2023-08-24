@@ -50,7 +50,7 @@ class AugmentedImageRepository(private val apolloClient:ApolloClient
             val response = this.executeQuery(query, this.apolloClient)
 
             if (response != null)
-                response.data!!.branchesWithOpenPositionsNearby.map {
+                return response.data!!.branchesWithOpenPositionsNearby.map {
                     it.augmentedImage.toAugmentedImageAndroid()
                 }
 

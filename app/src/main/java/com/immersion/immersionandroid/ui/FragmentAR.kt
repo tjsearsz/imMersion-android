@@ -1,30 +1,60 @@
 package com.immersion.immersionandroid.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.immersion.immersionandroid.R
 import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
+import com.immersion.immersionandroid.databinding.FragmentARBinding
+import com.immersion.immersionandroid.databinding.FragmentCompanyListBinding
 import com.immersion.immersionandroid.domain.AugmentedImage
+import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
 // import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.AugmentedImageNode
+import io.github.sceneview.node.Node
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 
-// @AndroidEntryPoint
 class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
-    lateinit var sceneView: ArSceneView
-    val superlist: MutableList<String> = mutableListOf()
+    private lateinit var sceneView: ArSceneView
+
+    private val imageNodeList: MutableMap<String, Node> = LinkedHashMap()
+
+    private val viewModel: AugmentedRealityViewModel by activityViewModels()
+
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private lateinit var currentLocation: Location
+
+    private var _binding: FragmentARBinding? = null
+
+    private val binding get() = _binding!!
 
     private fun setupImageDatabase(result: List<AugmentedImage>) {
 
@@ -40,15 +70,34 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
                 loadModelGlbAsync(glbFileLocation = it.modelURL)
             }*/
 
+            Log.d("debugging", "paseando")
+
+            Log.d("debugging", "el tamaño ${result.size}")
+
+            if (result.isNotEmpty() && sceneView.children.isNotEmpty()) {
+                Log.d("debugging", "A borrarlos!")
+
+                imageNodeList.forEach { entry -> sceneView.removeChild(entry.value) }
+
+                imageNodeList.clear()
+
+            }
+
             result.forEach {
                 val hola = UUID.randomUUID().toString().substring(0, 8)
                 database.addImage(hola, it.bitmapImageURL)
                 //database.addImage("whatever2", result[1].bitmapImageURL)
 
-                superlist.add(hola)
-                sceneView.addChild(AugmentedImageNode(hola, null).apply {
+                val imageNode = AugmentedImageNode(hola, null).apply {
                     loadModelGlbAsync(glbFileLocation = it.modelURL)
-                })
+                }
+
+                imageNodeList[hola] = imageNode
+                /*sceneView.addChild(AugmentedImageNode(hola, null).apply {
+                    loadModelGlbAsync(glbFileLocation = it.modelURL)
+                })*/
+
+                sceneView.addChild(imageNode)
             }
 
             /*database.addImage("whatever", result[0].bitmapImageURL)
@@ -92,10 +141,104 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
     }
 
+    private fun getCurrentLocationOfUser() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            /* ActivityCompat.requestPermissions(
+                 requireActivity(),
+                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                 PERMISSION_CODE
+             )*/
+
+            askForGPSPermission()
+
+            return
+        }
+
+        Log.d("debugging", "pedipermiso")
+
+
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+
+            if (location != null) {
+
+                currentLocation = location
+                executeAugmentedReality()
+            }
+        }
+    }
+
+    private fun askForGPSPermission() {
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    private fun executeAugmentedReality() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val result = viewModel.getAugmentedRealitiesInOpenPositionsNearby(
+                LatLng(
+                    currentLocation.latitude,
+                    currentLocation.longitude
+                )
+            )
+
+            Log.d("debugging", "lo obtenido ${result.size}")
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                Log.d("debugging", "bitmapeee")
+
+                setupImageDatabase(result)
+
+                Log.d("debugging", "mis hijos ${sceneView.children.size}")
+
+                binding.icArgps.isEnabled = true
+            }
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        _binding = FragmentARBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         sceneView = view.findViewById(R.id.sceneView)
+
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted)
+                    getCurrentLocationOfUser()
+                else{
+                    Toast.makeText(
+                        context,
+                        "Permission denied for location. Cannot get available jobs",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    requireActivity().finish()
+                }
+            }
+
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        binding.icArgps.setOnClickListener {
+            binding.icArgps.isEnabled = false
+            executeAugmentedReality()
+
+        }
 
 
         // var hola = ModelNode(sceneView.engine).loadModelGlbAsync()
@@ -111,66 +254,81 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
         lifecycleScope.launch {
 
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
 
-                lifecycleScope.launch(Dispatchers.IO) {
-                    //   var bitmap = getBitmap(result.imageURL)
-                    val result = AugmentedImageRepository().getAugmentedImages()
+                binding.icArgps.isEnabled = false
 
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        Log.d("debugging", "bitmapeee")
+                Log.d("debugging", "antes")
+                getCurrentLocationOfUser()
 
-                        setupImageDatabase(result)
-                        // sceneView.configureSession(::setupImageDatabase)
-
-                        // result.forEach {
-                       /* sceneView.onAugmentedImageUpdate +=
-                            {augmentedImage ->
-
-                                Log.d("debugging", augmentedImage.name)
-                            }*/
-
-                        /* var it = result[0]
-                            sceneView.addChild(
-
-                                AugmentedImageNode(
-                                    // imageName = UUID.randomUUID().toString().substring(0, 8),
-                                    imageName = superlist[0],
-                                    //bitmap = it.bitmapImageURL,
-                                    bitmap = null,
-                                    onUpdate = {_, _-> Log.d("debugging", "actualice 1")}
-                                ).apply { loadModelGlbAsync(glbFileLocation = it.modelURL) }
-
-                            )
+                //if (currentLocation !== null) {
+                /*  lifecycleScope.launch(Dispatchers.IO) {
+                      //   var bitmap = getBitmap(result.imageURL)
+                      //val result = AugmentedImageRepository().getAugmentedImages()
 
 
-                       /* sceneView.onAugmentedImageUpdate +=
-                            {augmentedImage ->
+                      val result = viewModel.getAugmentedRealitiesInOpenPositionsNearby(
+                          LatLng(
+                              currentLocation.latitude,
+                              currentLocation.longitude
+                          )
+                      )
 
-                                Log.d("debugging", augmentedImage.name)
-                            }*/
+                      lifecycleScope.launch(Dispatchers.Main) {
+                          Log.d("debugging", "bitmapeee")
 
-                        it = result[1]
+                          setupImageDatabase(result)
+                          // sceneView.configureSession(::setupImageDatabase)
 
-                        sceneView.addChild(
+                          // result.forEach {
+                          /* sceneView.onAugmentedImageUpdate +=
+                               {augmentedImage ->
 
-                            AugmentedImageNode(
-                                //imageName = UUID.randomUUID().toString().substring(0, 8),
-                                imageName = superlist[1],
-                                // bitmap = it.bitmapImageURL,
-                                bitmap = null,
-                                onUpdate = {_, _-> Log.d("debugging", "actualice 2")}
-                            ).apply { loadModelGlbAsync(glbFileLocation = it.modelURL) }
+                                   Log.d("debugging", augmentedImage.name)
+                               }*/
 
-                        )*/
+                          /* var it = result[0]
+                              sceneView.addChild(
+
+                                  AugmentedImageNode(
+                                      // imageName = UUID.randomUUID().toString().substring(0, 8),
+                                      imageName = superlist[0],
+                                      //bitmap = it.bitmapImageURL,
+                                      bitmap = null,
+                                      onUpdate = {_, _-> Log.d("debugging", "actualice 1")}
+                                  ).apply { loadModelGlbAsync(glbFileLocation = it.modelURL) }
+
+                              )
 
 
-                        // }
+                         /* sceneView.onAugmentedImageUpdate +=
+                              {augmentedImage ->
 
-                        Log.d("debugging", "mis hijos ${sceneView.children.size}")
+                                  Log.d("debugging", augmentedImage.name)
+                              }*/
 
-                    }
-                }
+                          it = result[1]
+
+                          sceneView.addChild(
+
+                              AugmentedImageNode(
+                                  //imageName = UUID.randomUUID().toString().substring(0, 8),
+                                  imageName = superlist[1],
+                                  // bitmap = it.bitmapImageURL,
+                                  bitmap = null,
+                                  onUpdate = {_, _-> Log.d("debugging", "actualice 2")}
+                              ).apply { loadModelGlbAsync(glbFileLocation = it.modelURL) }
+
+                          )*/
+
+
+                          // }
+
+                          Log.d("debugging", "mis hijos ${sceneView.children.size}")
+
+                      }
+                  }*/
+                // }
             }
         }
 
@@ -436,5 +594,10 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
                  Log.d("debugeando", sceneView.children.toString())
              }
          }*/
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

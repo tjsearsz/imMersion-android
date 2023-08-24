@@ -16,8 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val userRepository: ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetAllAugmentedImagesQuery.Data, Boolean, Unit>,
-    private val authorizationRepository: IAuthorizationImmersionRepository,
-    private val dataStoreRepository: IDataStoreRepository
+    private val authorizationRepository: IAuthorizationImmersionRepository
 ) :
     ViewModel() {
 
@@ -27,25 +26,17 @@ class MainViewModel @Inject constructor(
 
     private val mutableUser = MutableLiveData<User>()
 
-    suspend fun logIn(email: String, password: String): Boolean {
+    suspend fun logIn(email: String, password: String): Boolean? {
         Log.d("TESTING", "EL EMAIL $email y la clave $password")
 
 
-        val token = this.authorizationRepository.logIn(
+        return this.authorizationRepository.logIn(
             User(
                 email,
                 password
             )
-        ) //TODO: IMPROVE THIS VIOLATIONG SRP
+        )
 
-        Log.d("LOGGED SUCCESSFULLY", token)
-
-        if (token !== "") {
-            this.dataStoreRepository.save("token", token)
-            return true
-        }
-
-        return false
     }
 
     suspend fun registerUser(email: String, password: String): Boolean {

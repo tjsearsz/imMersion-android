@@ -3,10 +3,12 @@ package com.immersion.immersionandroid
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.immersion.immersionandroid.databinding.ActivityMainBinding
 import com.immersion.immersionandroid.presentation.MainViewModel
+import com.immersion.immersionandroid.ui.ARActivity
 import com.immersion.immersionandroid.ui.CreateUserActivity
 import com.immersion.immersionandroid.ui.OwnershipActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,24 +37,38 @@ class MainActivity : AppCompatActivity() {
         binding.logIn.setOnClickListener {
 
             lifecycleScope.launch(Dispatchers.IO) {
-                val successfulLogin = viewModel.logIn(
+                val isBusinessOwner = viewModel.logIn(
                     binding.editTextTextEmailAddress.text.toString(),
                     binding.editTextTextPassword.text.toString()
                 )
 
-                lifecycleScope.launch(Dispatchers.Main){
-                    Intent(applicationContext, OwnershipActivity::class.java).also{
-                        startActivity(it)
+                lifecycleScope.launch(Dispatchers.Main) {
+
+                    when (isBusinessOwner) {
+                        true -> Intent(applicationContext, OwnershipActivity::class.java).also {
+                            startActivity(it)
+                        }
+
+                        false -> Intent(applicationContext, ARActivity::class.java).also {
+                            startActivity(it)
+                        }
+
+                        else -> Toast.makeText(
+                            applicationContext,
+                            "There was an error while logging in",
+                            Toast.LENGTH_LONG
+                        ).show()
+
                     }
                 }
+
             }
 
-        }
+            binding.register.setOnClickListener {
 
-        binding.register.setOnClickListener {
-
-            Intent(applicationContext, CreateUserActivity::class.java).also {
-                startActivity(it)
+                Intent(applicationContext, CreateUserActivity::class.java).also {
+                    startActivity(it)
+                }
             }
         }
     }

@@ -48,7 +48,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApolloClient(dataStoreRepository: IDataStoreRepository): ApolloClient {
-        return ApolloClient.Builder().serverUrl("http://10.5.48.68:3000/graphql")
+        return ApolloClient.Builder().serverUrl("http://10.5.51.90:3000/graphql")
             .addHttpInterceptor(AuthorizationInterceptor(dataStoreRepository)).build()
     }
 
@@ -95,8 +95,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideImmersionAuthorizationRepository(apolloClient: ApolloClient): IAuthorizationImmersionRepository {
-        return AuthorizationImmersionRepository(apolloClient)
+    fun provideImmersionAuthorizationRepository(
+        apolloClient: ApolloClient,
+        dataStoreRepository: IDataStoreRepository
+    ): IAuthorizationImmersionRepository {
+        return AuthorizationImmersionRepository(apolloClient, dataStoreRepository)
     }
 
     @Provides
