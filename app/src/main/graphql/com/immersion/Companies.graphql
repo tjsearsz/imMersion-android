@@ -3,6 +3,7 @@ mutation addCompany($input: CreateCompanyInput!) {
         name
         description
         _id
+        companySector
     }
 }
 
@@ -11,5 +12,6 @@ query getCompanies {
         description,
         name,
         _id
+        companySector
     }
 }

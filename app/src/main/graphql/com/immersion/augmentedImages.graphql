@@ -1,6 +1,0 @@
-query getAllAugmentedImages {
-    getAllAugmentedImages {
-        imageURL
-        modelURL
-    }
-}

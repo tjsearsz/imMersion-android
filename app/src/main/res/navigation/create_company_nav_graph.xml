@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_company_nav_graph"
+    app:startDestination="@id/createCompanyBasicInfoFragment2">
+    <fragment
+        android:id="@+id/createCompanyBasicInfoFragment2"
+        android:name="com.immersion.immersionandroid.ui.CreateCompanyBasicInfoFragment"
+        android:label="CreateCompanyBasicInfoFragment"
+        tools:layout="@layout/fragment_create_company_basic_info">
+        <action
+            android:id="@+id/action_createCompanyBasicInfoFragment2_to_createCompanySectorFragment"
+            app:destination="@id/createCompanySectorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createCompanySectorFragment"
+        android:name="com.immersion.immersionandroid.ui.CreateCompanySectorFragment"
+        android:label="fragment_create_company_sector"
+        tools:layout="@layout/fragment_create_company_sector" />
+</navigation>

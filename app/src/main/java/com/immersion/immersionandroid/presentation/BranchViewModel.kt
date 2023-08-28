@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.immersion.AddBranchMutation
-import com.immersion.GetAllAugmentedImagesQuery
+// import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.GetBranchesQuery
 import com.immersion.immersionandroid.dataAccess.ACRUImmersionRepository
 import com.immersion.immersionandroid.dataAccess.FileStackDataSource
@@ -63,7 +63,7 @@ class BranchViewModel @Inject constructor(
         val newAugmentedRealityImage =
             AugmentedImage(
                 response.url,
-                "http://google.com",
+                "",
                 mutableImageBitmap.value!!,
                 mutableAugmentedImageRedirectURL.value
             )

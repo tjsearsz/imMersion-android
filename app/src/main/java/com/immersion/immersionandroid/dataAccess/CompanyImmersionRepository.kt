@@ -20,14 +20,18 @@ class CompanyImmersionRepository(apolloClient: ApolloClient) :
         val description =
             if (entity.description !== null) Optional.present(entity.description) else Optional.absent()
 
-        val companyInput = CreateCompanyInput(name = entity.name, description = description)
+        val companyInput = CreateCompanyInput(
+            name = entity.name,
+            description = description,
+            companySector = entity.companySector
+        )
         return AddCompanyMutation(companyInput)
     }
 
     override fun handleCreateResponse(response: ApolloResponse<AddCompanyMutation.Data>?): IEmployerOwnerShip? {
         if (response !== null && !response.hasErrors()) {
-            val (name, description, _id) = response.data!!.createCompany
-            return Company(name,description, _id)
+            val (name, description, _id, companySector) = response.data!!.createCompany
+            return Company(name, description, _id, companySector)
         }
 
         return null
@@ -42,14 +46,14 @@ class CompanyImmersionRepository(apolloClient: ApolloClient) :
     }
 
 
-
     override fun handleReadResponse(response: ApolloResponse<GetCompaniesQuery.Data>?): List<IEmployerOwnerShip> {
         if (response != null && !response.hasErrors()) {
             return response.data!!.userCompanies.map { company ->
                 Company(
                     name = company.name,
                     id = company._id,
-                    description = company.description
+                    description = company.description,
+                    companySector = company.companySector
                 )
             }
         }

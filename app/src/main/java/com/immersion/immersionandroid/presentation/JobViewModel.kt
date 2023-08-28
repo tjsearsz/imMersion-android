@@ -14,7 +14,7 @@ import android.net.Uri
 import android.util.Patterns
 import androidx.fragment.app.activityViewModels
 import com.immersion.AddJobMutation
-import com.immersion.GetAllAugmentedImagesQuery
+// import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.GetJobsQuery
 import com.immersion.immersionandroid.dataAccess.ACRUImmersionRepository
 import com.immersion.immersionandroid.domain.IEmployerOwnerShip

@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.immersion.AddJobMutation
-import com.immersion.GetAllAugmentedImagesQuery
+// import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.GetJobsQuery
 import com.immersion.immersionandroid.domain.AugmentedImage
 import com.immersion.immersionandroid.domain.Company
