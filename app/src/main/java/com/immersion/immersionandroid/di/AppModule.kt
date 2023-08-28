@@ -17,7 +17,7 @@ import javax.inject.Singleton
 import com.immersion.AddBranchMutation
 import com.immersion.AddCompanyMutation
 import com.immersion.AddJobMutation
-import com.immersion.GetAllAugmentedImagesQuery
+// import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.GetBranchesQuery
 import com.immersion.GetCompaniesQuery
 import com.immersion.GetJobsQuery
@@ -27,9 +27,11 @@ import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.AuthorizationImmersionRepository
 import com.immersion.immersionandroid.dataAccess.BranchImmersionRepository
 import com.immersion.immersionandroid.dataAccess.CompanyImmersionRepository
+import com.immersion.immersionandroid.dataAccess.CompanySectorImmersionRepository
 import com.immersion.immersionandroid.dataAccess.DataStoreRepository
 import com.immersion.immersionandroid.dataAccess.IAugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.IAuthorizationImmersionRepository
+import com.immersion.immersionandroid.dataAccess.ICompanySectorImmersionRepository
 import com.immersion.immersionandroid.dataAccess.IDataStoreRepository
 import com.immersion.immersionandroid.dataAccess.UserImmersionRepository
 import com.immersion.immersionandroid.domain.Branch
@@ -89,7 +91,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideImmersionUserRepository(apolloClient: ApolloClient): ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetAllAugmentedImagesQuery.Data, Boolean, Unit> {
+    fun provideImmersionUserRepository(apolloClient: ApolloClient): ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetBranchesQuery.Data, Boolean, Unit> {
         return UserImmersionRepository(apolloClient)
     }
 
@@ -112,5 +114,11 @@ object AppModule {
     @Singleton
     fun provideAugmentedImageRepository(apolloClient: ApolloClient): IAugmentedImageRepository {
         return AugmentedImageRepository(apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanySectorRepository(apolloClient: ApolloClient): ICompanySectorImmersionRepository {
+        return CompanySectorImmersionRepository(apolloClient)
     }
 }

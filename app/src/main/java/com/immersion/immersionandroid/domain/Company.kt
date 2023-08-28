@@ -3,7 +3,7 @@ package com.immersion.immersionandroid.domain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Company(val name: String, val description: String?, override val id: String) :
+data class Company(val name: String, val description: String?, override val id: String, val companySector: String) : //TODO: CHANGE COMPANY SECTOR STRING TO THE REAL TYPE
     IEmployerOwnerShip {
 
     //TODO: This should be added when doing the get

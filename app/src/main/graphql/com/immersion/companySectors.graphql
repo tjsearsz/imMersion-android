@@ -1,0 +1,6 @@
+query CompanySectors{
+    CompanySectors{
+        _id
+        title
+    }
+}

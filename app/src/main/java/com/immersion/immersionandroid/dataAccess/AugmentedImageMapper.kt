@@ -4,12 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.immersion.BranchesWithOpenPositionsNearbyQuery
-import com.immersion.GetAllAugmentedImagesQuery
+//import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.GetBranchesQuery
 import com.immersion.immersionandroid.domain.AugmentedImage
 import java.net.URL
 
-fun GetAllAugmentedImagesQuery.GetAllAugmentedImage.toAugmentedImage(): AugmentedImage {
+/*fun GetAllAugmentedImagesQuery.GetAllAugmentedImage.toAugmentedImage(): AugmentedImage {
     Log.d("debugging", "${modelURL} ${imageURL}")
     val bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
     return AugmentedImage(
@@ -18,7 +18,7 @@ fun GetAllAugmentedImagesQuery.GetAllAugmentedImage.toAugmentedImage(): Augmente
         bitmapImageURL = bitmapImageURL,
         redirectURL = null
     )
-}
+}*/
 
 fun GetBranchesQuery.AugmentedImage.toAugmentedImageAndroid(): AugmentedImage {
     Log.d("debugging", "${modelURL} ${imageURL}")

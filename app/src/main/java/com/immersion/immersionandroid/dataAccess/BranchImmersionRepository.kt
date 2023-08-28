@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.google.android.gms.maps.model.LatLng
 import com.immersion.AddBranchMutation
-import com.immersion.GetAllAugmentedImagesQuery
+// import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.GetBranchesQuery
 import com.immersion.immersionandroid.domain.AugmentedImage
 import com.immersion.immersionandroid.domain.Branch
@@ -28,7 +28,6 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
 
         val imageInput = AugmentedImageInput(
             entity.augmentedImage.imageURL,
-            entity.augmentedImage.modelURL,
             arRedirectUrl
         )
 

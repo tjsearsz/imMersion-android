@@ -4,7 +4,6 @@ import android.util.Log
 import com.apollographql.apollo3.ApolloClient
 import com.google.android.gms.maps.model.LatLng
 import com.immersion.BranchesWithOpenPositionsNearbyQuery
-import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.LogInMutation
 import com.immersion.immersionandroid.domain.AugmentedImage
 import com.immersion.type.LoginUserInput
@@ -15,7 +14,10 @@ class AugmentedImageRepository(private val apolloClient:ApolloClient
     //TODO: Change this to hilt
    // private val apolloClient: ApolloClient =
      //   ApolloClient.Builder().serverUrl("http://10.5.48.68:3000/graphql").build()
-    override suspend fun getAugmentedImages(): List<AugmentedImage> {
+
+
+    //TODO: delete this later leaving this for showing an example of the error
+    /*override suspend fun getAugmentedImages(): List<AugmentedImage> {
         Log.d("debugging", "consultado el ar!")
         // delay(5000L)
         /*return listOf(
@@ -34,7 +36,7 @@ class AugmentedImageRepository(private val apolloClient:ApolloClient
             .execute().data?.getAllAugmentedImages?.map {
                 it.toAugmentedImage()
             } ?: emptyList()
-    }
+    }*/
 
    /* private fun imageURLToBitmap(imageURL: String): Bitmap {
         val url = URL(imageURL)

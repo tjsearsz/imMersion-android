@@ -15,33 +15,11 @@ type AugmentedImage {
   redirectURL: String
 }
 
-type AugmentedImage2 {
-  """
-  URL location for the image that will be scanned by the device
-  """
-  imageURL: String!
-
-  """
-  URL location for the Model to be rendered for this Image
-  """
-  modelURL: String!
-
-  """
-  Redirect page when clicking the image
-  """
-  redirectURL: String
-}
-
 input AugmentedImageInput {
   """
   URL where the image of the new model is located
   """
   imageURL: String!
-
-  """
-  URL for the model we want to create
-  """
-  modelURL: String!
 
   """
   URL where the user can click to get redirected to
@@ -90,6 +68,11 @@ type Company {
   _id: ID!
 
   """
+  ID for the sector of the company
+  """
+  companySector: String!
+
+  """
   Brief information about the company
   """
   description: String
@@ -103,6 +86,21 @@ type Company {
   Name of the company
   """
   name: String!
+}
+
+"""
+Company sector that a company can have
+"""
+type CompanySector {
+  """
+  ID of the sector
+  """
+  _id: ID!
+
+  """
+  Title of the sector
+  """
+  title: String!
 }
 
 input CreateBranchInput {
@@ -123,6 +121,11 @@ input CreateBranchInput {
 }
 
 input CreateCompanyInput {
+  """
+  ID of the sector for this company
+  """
+  companySector: String!
+
   """
   Brief information about the new company
   """
@@ -271,6 +274,11 @@ type Mutation {
 }
 
 type Query {
+  """
+  Gets all the company sectors available
+  """
+  CompanySectors: [CompanySector!]!
+
   branch: [Branch!]!
 
   """
@@ -287,8 +295,6 @@ type Query {
   Gets all the branches based on the companyId
   """
   companyBranches(companyId: String!): [Branch!]!
-
-  getAllAugmentedImages: [AugmentedImage2!]!
 
   job(id: Int!): Job!
 
@@ -323,6 +329,11 @@ input UpdateBranchInput {
 }
 
 input UpdateCompanyInput {
+  """
+  ID of the sector for this company
+  """
+  companySector: String!
+
   """
   Brief information about the new company
   """

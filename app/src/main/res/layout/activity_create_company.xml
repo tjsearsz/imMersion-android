@@ -6,40 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.CreateCompanyActivity">
 
-    <EditText
-        android:id="@+id/companyName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="176dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/companyDescription"
-        android:layout_width="200dp"
-        android:layout_height="141dp"
-        android:layout_marginTop="120dp"
-        android:ems="10"
-        android:hint="Description"
-        android:inputType="textMultiLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/companyName" />
-
-    <Button
-        android:id="@+id/createCompany"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        android:text="Create Company"
-        android:enabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/companyDescription"
-        app:layout_constraintVertical_bias="0.165" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView2"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/create_company_nav_graph" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,8 @@ package com.immersion.immersionandroid.presentation
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.immersion.GetAllAugmentedImagesQuery
+import com.immersion.GetBranchesQuery
+// import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.SignInMutation
 import com.immersion.UpdateUserMutation
 import com.immersion.immersionandroid.dataAccess.ACRUImmersionRepository
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val userRepository: ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetAllAugmentedImagesQuery.Data, Boolean, Unit>,
+    private val userRepository: ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetBranchesQuery.Data, Boolean, Unit>,
     private val authorizationRepository: IAuthorizationImmersionRepository
 ) :
     ViewModel() {
