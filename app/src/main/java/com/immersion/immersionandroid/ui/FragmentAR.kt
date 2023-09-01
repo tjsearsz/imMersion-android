@@ -1,6 +1,7 @@
 package com.immersion.immersionandroid.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -36,6 +37,7 @@ import io.github.sceneview.node.Node
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlin.properties.Delegates
 
 
 class FragmentAR : Fragment(R.layout.fragment_a_r) {
@@ -53,6 +55,8 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
     private lateinit var currentLocation: Location
 
     private var _binding: FragmentARBinding? = null
+
+    private var isBusinessOwner: Boolean by Delegates.notNull<Boolean>()
 
     private val binding get() = _binding!!
 
@@ -214,13 +218,32 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        isBusinessOwner =
+            activity?.intent?.extras?.getBoolean("isBusinessOwner", false) ?: false
+
+        binding.icUserAction.apply {
+            text = if (isBusinessOwner) "Dashboard" else "Business Owner?"
+            setOnClickListener {
+                if (isBusinessOwner)
+                    Intent(context, OwnershipActivity::class.java).also {
+                        startActivity(it) //TODO: We need to apply one of those flags to avoid opening activity again and agian
+                        requireActivity().finish()
+                    }
+                else
+                    Intent(context, RegisterAsBusinessOwnerActivity::class.java).also {
+                        startActivity(it)
+                    }
+
+            }
+        }
+
         sceneView = view.findViewById(R.id.sceneView)
 
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted)
                     getCurrentLocationOfUser()
-                else{
+                else {
                     Toast.makeText(
                         context,
                         "Permission denied for location. Cannot get available jobs",

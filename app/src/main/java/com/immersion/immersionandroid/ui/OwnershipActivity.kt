@@ -25,6 +25,14 @@ class OwnershipActivity : AppCompatActivity() {
         _binding = ActivityOwnershipBinding.inflate(layoutInflater)
         val view = binding.root
 
+        binding.goToaR.setOnClickListener{
+            val intent = Intent(applicationContext, ARActivity::class.java)
+            intent.putExtra("isBusinessOwner", true).also {
+                startActivity(it)
+                finish() ///TODO: instead of sinish the activity, consider grabbing it from the stack
+            }
+        }
+
         setContentView(view)
     }
 
