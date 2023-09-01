@@ -24,9 +24,12 @@ class AuthorizationImmersionRepository(
             if (response != null && !response.hasErrors()) {
                 val token = response.data!!.login.accessToken
                 Log.d("TESTINGS", "el super token llego $token")
+
                 this.dataStoreRepository.save("token", token)
+                val isBusinessOwner = response.data!!.login.user.isBusinessOwner.toString()
+                this.dataStoreRepository.save("isBusinessOwner", isBusinessOwner)
                 return response.data!!.login.user.isBusinessOwner
-            } 
+            }
 
             null
 

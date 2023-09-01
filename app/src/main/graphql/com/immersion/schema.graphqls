@@ -244,6 +244,8 @@ input LoginUserInput {
 }
 
 type Mutation {
+  changeUserBusinessOwnerStatus(isBusinessOwner: Boolean!): Boolean!
+
   createBranch(createBranchInput: CreateBranchInput!): Branch!
 
   createCompany(createCompanyInput: CreateCompanyInput!): Company!

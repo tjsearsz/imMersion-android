@@ -33,6 +33,7 @@ import com.immersion.immersionandroid.dataAccess.IAugmentedImageRepository
 import com.immersion.immersionandroid.dataAccess.IAuthorizationImmersionRepository
 import com.immersion.immersionandroid.dataAccess.ICompanySectorImmersionRepository
 import com.immersion.immersionandroid.dataAccess.IDataStoreRepository
+import com.immersion.immersionandroid.dataAccess.IUserRepository
 import com.immersion.immersionandroid.dataAccess.UserImmersionRepository
 import com.immersion.immersionandroid.domain.Branch
 import com.immersion.immersionandroid.domain.Company
@@ -120,5 +121,11 @@ object AppModule {
     @Singleton
     fun provideCompanySectorRepository(apolloClient: ApolloClient): ICompanySectorImmersionRepository {
         return CompanySectorImmersionRepository(apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(apolloClient: ApolloClient): IUserRepository {
+        return UserImmersionRepository(apolloClient)
     }
 }

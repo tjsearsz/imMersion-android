@@ -50,8 +50,11 @@ class MainActivity : AppCompatActivity() {
                             startActivity(it)
                         }
 
-                        false -> Intent(applicationContext, ARActivity::class.java).also {
-                            startActivity(it)
+                        false -> {
+                            val intendedIntent = Intent(applicationContext, ARActivity::class.java)
+                            intendedIntent.putExtra("isBusinessOwner", false).also {
+                                startActivity(it)
+                            }
                         }
 
                         else -> Toast.makeText(

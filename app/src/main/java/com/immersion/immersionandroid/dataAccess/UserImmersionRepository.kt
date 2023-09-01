@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
+import com.immersion.ChangeUserBusinessOwnerStatusMutation
 import com.immersion.GetBranchesQuery
 // import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.SignInMutation
@@ -17,7 +18,7 @@ import com.immersion.type.UpdateUserInput
 class UserImmersionRepository(apolloClient: ApolloClient) :
     ACRUImmersionRepository<User, SignInMutation.Data, Boolean, UpdateUserMutation.Data, Boolean, GetBranchesQuery.Data, Boolean, Unit>(
         apolloClient
-    ) {
+    ), IUserRepository {
 
     override fun prepareCreate(entity: User): Mutation<SignInMutation.Data> {
         Log.d("TESTING", "VOY A INSERTAR $entity.email $entity.password")
@@ -53,6 +54,19 @@ class UserImmersionRepository(apolloClient: ApolloClient) :
 
     override fun handleReadResponse(response: ApolloResponse<GetBranchesQuery.Data>?): Boolean {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun changeBusinessOwnerStatus(isBusinessOwner: Boolean): Boolean {
+
+        val mutation = ChangeUserBusinessOwnerStatusMutation(isBusinessOwner)
+
+        return try {
+            this.executeMutation(mutation, apolloClient)
+            true
+        } catch (error: Exception) {
+            false
+        }
+
     }
 
 

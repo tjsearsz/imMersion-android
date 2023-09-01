@@ -19,6 +19,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.RegisterAsBusinessOwnerActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.OwnershipActivity"
             android:exported="false" />
         <activity
@@ -50,17 +53,12 @@
             android:name=".ui.CreateBranchActivity"
             android:exported="false"
             android:label="@string/title_activity_create_branch" />
-
-
         <activity
             android:name=".ui.CreateCompanyActivity"
             android:exported="false" />
-
-
         <activity
             android:name=".ui.CreateJobActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -70,13 +68,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.ARActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
-            android:screenOrientation="locked">
-        </activity>
+            android:screenOrientation="locked"></activity>
         <!--
  <activity
             android:name=".MainActivity"
@@ -88,9 +84,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
-
-        <!--suppress AndroidDomInspection -->
+        </activity>
+        -->
+        <!-- suppress AndroidDomInspection -->
         <service
             android:name="com.google.android.gms.metadata.ModuleDependencies"
             android:enabled="false"

@@ -1,5 +1,9 @@
 package com.immersion.immersionandroid.ui
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.commit
@@ -9,9 +13,22 @@ import io.github.sceneview.utils.setFullScreen
 
 @AndroidEntryPoint
 class ARActivity : AppCompatActivity() {
+
+    private val closeAr = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action === "CLOSE_AR")
+                finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aractivity)
+
+        registerReceiver(
+            closeAr,
+            IntentFilter("CLOSE_AR"),
+        )
 
         setFullScreen(
             findViewById(R.id.arView),
@@ -27,5 +44,10 @@ class ARActivity : AppCompatActivity() {
                 Bundle()
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(closeAr)
     }
 }
