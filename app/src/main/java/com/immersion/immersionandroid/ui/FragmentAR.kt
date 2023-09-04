@@ -6,10 +6,15 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,20 +25,27 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.immersion.immersionandroid.R
-import com.immersion.immersionandroid.dataAccess.AugmentedImageRepository
 import com.immersion.immersionandroid.databinding.FragmentARBinding
-import com.immersion.immersionandroid.databinding.FragmentCompanyListBinding
 import com.immersion.immersionandroid.domain.AugmentedImage
+import com.immersion.immersionandroid.domain.IEmployerOwnerShip
+import com.immersion.immersionandroid.domain.Job
 import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
+import dev.romainguy.kotlin.math.rotation
 // import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
 import io.github.sceneview.ar.ArSceneView
+import io.github.sceneview.ar.arcore.isTracking
 import io.github.sceneview.ar.node.AugmentedImageNode
+import io.github.sceneview.collision.pickHitTest
+import io.github.sceneview.math.Position
+import io.github.sceneview.math.Rotation
+import io.github.sceneview.math.Scale
 import io.github.sceneview.node.Node
+import io.github.sceneview.node.ViewNode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -60,7 +72,7 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
     private val binding get() = _binding!!
 
-    private fun setupImageDatabase(result: List<AugmentedImage>) {
+    private fun setupImageDatabase(result: LinkedHashMap<AugmentedImage, List<IEmployerOwnerShip>> /*List<AugmentedImage>*/) {
 
         sceneView.configureSession { session, config ->
 
@@ -87,14 +99,178 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
             }
 
-            result.forEach {
+            result.forEach { (augmentedImage, jobList) ->
                 val hola = UUID.randomUUID().toString().substring(0, 8)
-                database.addImage(hola, it.bitmapImageURL)
+                database.addImage(hola, augmentedImage.bitmapImageURL)
                 //database.addImage("whatever2", result[1].bitmapImageURL)
+                Log.d("tapping", "el numero magico: $hola")
+                val imageNode = AugmentedImageNode(hola, null, onUpdate = { node, image ->
+                    Log.d("debugging", "la magia atras")
+                    Log.d("debugging", "los super hijitos ${node.children.size}")
+                    Log.d("debugging", "el nombre : ${node.imageName}")
+                    Log.d("debugging", "el iamge : ${image.name}")
+                    Log.d("debugging", "1 : ${augmentedImage.scale}")
+                    Log.d("debugging", "2 : ${augmentedImage.summaryScale}")
+                    Log.d("debugging", "3 : ${augmentedImage.summaryX}")
+                    Log.d("debugging", "4 : ${augmentedImage.summaryZ}")
+                    if (image.isTracking && node.children.isEmpty()) {
+                        Log.d("debugging", "la magia compienza")
+                        ViewRenderable.builder()
+                            .setView(context, R.layout.ar_job_summary_layout)
+                            .build()
+                            .thenAccept { renderable: ViewRenderable ->
+                                val viewNode = ViewNode()
 
-                val imageNode = AugmentedImageNode(hola, null).apply {
-                    loadModelGlbAsync(glbFileLocation = it.modelURL)
+                                val jobSize = jobList.size
+                                Log.d("debugging", "el tañao ${jobSize}")
+                                fillArJobDescription(renderable, jobList)
+
+                                //val arJobTitle = renderable.view.findViewById<TextView>(R.id.arJobTitle)
+
+                                // val hola = View.inflate(context, R.layout.testing_layout, null)
+
+                                // arJobTitle.text = "mega test"
+
+
+                                renderable.view.apply {
+
+                                    alpha = 0.0f
+                                    x = -3000.0f
+                                    //translationX = -100.0f
+                                }.animate().apply {
+                                    duration = 3000
+                                    alpha(1.0f)
+                                    interpolator = AccelerateInterpolator()
+                                    //translationX(4.0f)
+                                    x(0.0f)
+                                    start()
+
+                                }
+
+                                renderable.isShadowCaster = false
+                                renderable.isShadowReceiver = false
+
+                                /*val hola2 = renderable.view.animate().apply {
+                                    alpha(1.0f)
+                                    duration = 5000
+                                    interpolator = AccelerateInterpolator()
+                                }*/
+
+                                /*renderable.view.findViewById<ImageButton>(R.id.buttonG)
+                                    .setOnClickListener {
+                                        Log.d("tapping", "presione el megaboton")
+                                    }*/
+
+                                viewNode.setRenderable(renderable)
+
+                                viewNode.name = "looking"
+                                // viewNode.position = Position(x = 1.0f, y = 0.0f, z = 0.0f) //TODO: THIS WORKS TOO BUT I PREFER THE TRANSFORM DOWN
+                                //viewNode.rotation = Rotation(45.0f)
+                                //viewNode.scale = Scale(1.0f)
+                                viewNode.scale = Scale(augmentedImage.summaryScale)
+
+                                viewNode.apply {
+                                    onTap = { motionEvent, _ ->
+                                        Log.d("tapping", "tapeando workaround")
+                                    }
+                                    transform(
+                                        position = Position(
+                                            x = augmentedImage.summaryX,
+                                            z = augmentedImage.summaryZ
+                                        ), //Position(x = 0.7f, z= -0.3f), //Position(z = -4f),
+                                        rotation = Rotation(x = 2.6f, y = 10f)
+                                    )
+                                }
+
+                                /* val hola70: ViewPropertyAnimator?
+
+                                 viewNode.renderableInstance.apply {
+                                     hola70 = view?.apply {
+                                             alpha = 0.0f
+                                         }?.animate()
+                                 }*/
+
+                                /* val hola9 = viewNode.renderableInstance!!
+
+                                 val non = hola9.animate(true).apply {
+                                     setPropertyName("alpha")
+                                     setFloatValues(0.0f, 1.0f)
+                                     duration= 5000
+                                     repeatCount = 10
+                                 }*/
+
+                                // viewNode.renderableInstance?.animate(false)?.start()
+
+                                /*viewNode.renderableInstance?.animate(true)?.apply {
+                                     setPropertyName("alpha")
+                                     setFloatValues(0f, 1f)
+                                     interpolator
+                                     this.start()
+                                 }?.start()*/
+
+                                /*  viewNode.renderableInstance?.animate(false)?.apply {
+                                      setPropertyName("alpha")
+                                      setFloatValues(0f, 1f)
+                                      repeatCount = 0
+                                      duration = 5000
+                                      start()
+                                  }*/
+
+                                /*val hola4 = viewNode.renderableInstance?.animate(true)
+
+                                hola4?.apply {
+                                    Log.d("tapping", "me llamaron")
+                                    setPropertyName(
+                                        "alpha"
+                                    )
+                                    duration = 3000
+                                    setFloatValues(0f, 1f)
+                                    interpolator = AccelerateInterpolator()
+                                }?.start() */
+
+                                /*viewNode.renderableInstance?.apply {
+                                    objectanimat
+                                }
+
+                                val ani = ObjectAnimator.off*/
+                                //hola2.start()
+                                node.addChild(viewNode)
+
+                                // non.start()
+                            }
+                    }
+                }).apply {
+                    loadModelGlbAsync(glbFileLocation = augmentedImage.modelURL, autoAnimate = true)
+                    scale = Scale(augmentedImage.scale)
+                    onTap = { motionEvent, renderable ->
+                        Log.d("tapping", "imagen tapar, ${renderable}")
+                        Log.d("tapping", "id del tappar, ${this.imageName}")
+
+                    }
+                    applyPosePosition =
+                        true // this should fix the problem of not following the anchor thing, found on discord https://discord.com/channels/893787194295222292/895209031700979752/1129952261410390088
                 }
+
+                /*ViewRenderable.builder().setView(context, R.layout.testing_layout).build()
+                    .thenAccept { renderable: ViewRenderable ->
+
+                        Log.d("debugging", "then acceptaendo")
+                        val hola = UUID.randomUUID().toString().substring(0, 8)
+                        database.addImage(hola, it.bitmapImageURL)
+
+                        val viewNode = ViewNode()
+                        viewNode.setRenderable(renderable)
+                        viewNode.position = Position(x = 0.0f, y = 0.0f, z = 0.0f)
+
+
+                        val imageNode = AugmentedImageNode(hola, null).apply {
+                            loadModelGlbAsync(glbFileLocation = it.modelURL)
+                            addChild(viewNode)
+                        }
+
+                        imageNodeList[hola] = imageNode
+                        sceneView.addChild(imageNode)
+                    }*/
 
                 imageNodeList[hola] = imageNode
                 /*sceneView.addChild(AugmentedImageNode(hola, null).apply {
@@ -143,6 +319,117 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
 
         }
 
+        /* sceneView.onTapAr = { hitresult, motionevent ->
+             Log.d("tapping", "tapar ${hitresult}")
+         }
+
+         sceneView.onTap = { motionEvent, node, renderable ->
+             Log.d("tapping", "normal tapar ${node?.name}, ${renderable}")
+         }*/
+
+        val gestureDetector =
+            GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapUp(e: MotionEvent): Boolean {
+                    return onSingleTap(e)
+                }
+            })
+
+        sceneView.setOnTouchListener { _, motionEvent ->
+            gestureDetector.onTouchEvent(motionEvent)
+        }
+
+    }
+
+    private fun fillArJobDescription(
+        renderable: ViewRenderable,
+        jobList: List<IEmployerOwnerShip>
+    ) {
+
+        val jobSize = jobList.size
+
+        for ((index, iEmployerOwnerShip) in jobList.withIndex()) {
+
+            val job = iEmployerOwnerShip as Job
+            if (jobSize == 1) {
+                val displayJob =
+                    renderable.view.findViewById<TextView>(R.id.displayJob2)
+
+                displayJob.apply {
+                    text = job.name
+                    visibility = VISIBLE
+                }
+            } else if (jobSize == 2) {
+                if (index == 0) {
+                    val displayJob = renderable.view.findViewById<TextView>(R.id.displayJob1)
+                    displayJob.apply {
+                        text = job.name
+                        visibility = VISIBLE
+                    }
+                } else {
+                    val displayJob =
+                        renderable.view.findViewById<TextView>(R.id.displayJob3).apply {
+                            text = job.name
+                            visibility = VISIBLE
+                        }
+
+                    displayJob.apply {
+                        text = job.name
+                        visibility = VISIBLE
+                    }
+                }
+            } else {
+
+                if (index < 3)
+                    when (index) {
+                        0 -> {
+                            val displayJob =
+                                renderable.view.findViewById<TextView>(R.id.displayJob1)
+
+                            displayJob.apply {
+                                text = job.name
+                                visibility = VISIBLE
+                            }
+                        }
+
+                        1 -> {
+                            val displayJob =
+                                renderable.view.findViewById<TextView>(R.id.displayJob2)
+                            displayJob.apply {
+                                text = job.name
+                                visibility = VISIBLE
+                            }
+
+                        }
+
+                        else -> {
+                            val displayJob =
+                                renderable.view.findViewById<TextView>(R.id.displayJob3)
+
+                            displayJob.apply {
+                                text = job.name
+                                visibility = VISIBLE
+                            }
+                        }
+                    }
+                else {
+                    val displayManyMore =
+                        renderable.view.findViewById<TextView>(R.id.displayManyMore)
+                    displayManyMore.visibility = VISIBLE
+
+                    break
+                }
+            }
+        }
+    }
+
+    private fun onSingleTap(motionEvent: MotionEvent): Boolean {
+        val pickNode = sceneView.pickHitTest(motionEvent, false).node
+        if (pickNode != null && pickNode is ViewNode) {
+            pickNode.onTap(motionEvent, null)
+            return true
+        }
+
+        return false
     }
 
     private fun getCurrentLocationOfUser() {

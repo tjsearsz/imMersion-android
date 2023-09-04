@@ -32,6 +32,14 @@ query branchesWithOpenPositionsNearby($input: [Float!]!){
             imageURL
             modelURL
             redirectURL
+            scale
+            summaryScale
+            summaryX
+            summaryZ
+        }
+        jobs{
+            name
+            description
         }
     }
 }

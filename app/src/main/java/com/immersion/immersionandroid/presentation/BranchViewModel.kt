@@ -65,7 +65,11 @@ class BranchViewModel @Inject constructor(
                 response.url,
                 "",
                 mutableImageBitmap.value!!,
-                mutableAugmentedImageRedirectURL.value
+                mutableAugmentedImageRedirectURL.value,
+                0f,
+                0f,
+                0f,
+                0f
             )
 
         val newBranch =

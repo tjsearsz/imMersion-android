@@ -7,6 +7,7 @@ import com.immersion.BranchesWithOpenPositionsNearbyQuery
 //import com.immersion.GetAllAugmentedImagesQuery
 import com.immersion.GetBranchesQuery
 import com.immersion.immersionandroid.domain.AugmentedImage
+import dev.romainguy.kotlin.math.scale
 import java.net.URL
 
 /*fun GetAllAugmentedImagesQuery.GetAllAugmentedImage.toAugmentedImage(): AugmentedImage {
@@ -27,7 +28,11 @@ fun GetBranchesQuery.AugmentedImage.toAugmentedImageAndroid(): AugmentedImage {
         imageURL = imageURL,
         modelURL = modelURL,
         bitmapImageURL = bitmapImageURL,
-        redirectURL = null
+        redirectURL = null,
+        0f,
+        0f,
+        0f,
+        0f
     )
 }
 
@@ -39,7 +44,11 @@ fun BranchesWithOpenPositionsNearbyQuery.AugmentedImage.toAugmentedImageAndroid(
         imageURL = imageURL,
         modelURL = modelURL,
         bitmapImageURL = bitmapImageURL,
-        redirectURL = null
+        redirectURL = null,
+        scale= scale.toFloat(),
+        summaryScale = summaryScale.toFloat(),
+        summaryX = summaryX.toFloat(),
+        summaryZ = summaryZ.toFloat()
     )
 }
 
