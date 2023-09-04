@@ -49,7 +49,11 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
                 augmentedImage.imageURL,
                 augmentedImage.modelURL,
                 imageURLToBitmap(augmentedImage.imageURL),
-                if (augmentedImage.redirectURL != null) Uri.parse(augmentedImage.redirectURL) else null
+                if (augmentedImage.redirectURL != null) Uri.parse(augmentedImage.redirectURL) else null,
+                0f,
+                0f,
+                0f,
+                0f
             )
 
             val finalAddress = LatLng(address[1], address[0])

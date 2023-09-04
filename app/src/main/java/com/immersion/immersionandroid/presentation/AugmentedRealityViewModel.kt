@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.immersion.immersionandroid.dataAccess.IAugmentedImageRepository
 import com.immersion.immersionandroid.domain.AugmentedImage
+import com.immersion.immersionandroid.domain.IEmployerOwnerShip
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -24,7 +25,12 @@ class AugmentedRealityViewModel @Inject constructor(private val augmentedImageRe
 
     data class AugmentedImagesState(val augmentedImage: AugmentedImage? = null)*/
 
-    suspend fun getAugmentedRealitiesInOpenPositionsNearby(coordinates: LatLng): List<AugmentedImage>{
+    /*suspend fun getAugmentedRealitiesInOpenPositionsNearby(coordinates: LatLng): List<AugmentedImage>{
+        return this.augmentedImageRepository.getAugmentedImagesNearbyCoordinates(coordinates)
+    }*/
+
+    suspend fun getAugmentedRealitiesInOpenPositionsNearby(coordinates: LatLng): LinkedHashMap<AugmentedImage, List<IEmployerOwnerShip>>
+    {
         return this.augmentedImageRepository.getAugmentedImagesNearbyCoordinates(coordinates)
     }
 

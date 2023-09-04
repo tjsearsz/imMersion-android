@@ -9,7 +9,10 @@ import retrofit2.http.POST
 interface IFilestackDataSource {
 
     @Headers("Content-Type: image/png")
-    //@POST("S3?key=AxoscveBQCOyNyjS5xuAgz") //TODO: check how to add query params
-    @POST("S3?key=AUepLfeCbQ2C7fx4LnVr4z") //TODO: CHANGED THIS BECAUSE I EXHAUSTED THE OTHER ACCOUNT
+    // @POST("S3?key=AxoscveBQCOyNyjS5xuAgz") //TODO: check how to add query params
+    // @POST("S3?key=AUepLfeCbQ2C7fx4LnVr4z") //TODO: CHANGED THIS BECAUSE I EXHAUSTED THE OTHER ACCOUNT
+    // @POST("S3?key=AundePne3QKedafJWPQXSz") //TODO: CHANGED THIS BECAUSE I EXHAUSTED THE OTHER ACCOUNT
+    // @POST("S3?key=ADhIULi4SseHZv7Nfq5dhz") //TODO: CHANGED THIS BECAUSE I EXHAUSTED THE OTHER ACCOUNT
+    @POST("S3?key=AkCxHMxXUT02yEPM9JHoYz") //TODO: CHANGED THIS BECAUSE I EXHAUSTED THE OTHER ACCOUNT
     suspend fun uploadImage(@Body image: RequestBody) : FileStackResponse
 }

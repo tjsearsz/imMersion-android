@@ -13,6 +13,26 @@ type AugmentedImage {
   Redirect page when clicking the image
   """
   redirectURL: String
+
+  """
+  Scale that the Augmented Image will have
+  """
+  scale: Float!
+
+  """
+  Scale that the summary of the Augmented Image will have
+  """
+  summaryScale: Float!
+
+  """
+  Position in the X axis that the summary of the Augmented Image will have
+  """
+  summaryX: Float!
+
+  """
+  Position in the Z axis that the summary of the Augmented Image will have
+  """
+  summaryZ: Float!
 }
 
 input AugmentedImageInput {

@@ -10,5 +10,9 @@ data class AugmentedImage(
     val imageURL: String,
     val modelURL: String,
     val bitmapImageURL: Bitmap,
-    val redirectURL: Uri?
+    val redirectURL: Uri?,
+    val scale: Float,
+    val summaryScale: Float,
+    val summaryX: Float,
+    val summaryZ: Float
 ): Parcelable
