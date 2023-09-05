@@ -23,11 +23,11 @@ import java.net.URL
 
 fun GetBranchesQuery.AugmentedImage.toAugmentedImageAndroid(): AugmentedImage {
     Log.d("debugging", "${modelURL} ${imageURL}")
-    val bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
+    // val bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
     return AugmentedImage(
         imageURL = imageURL,
         modelURL = modelURL,
-        bitmapImageURL = bitmapImageURL,
+        // bitmapImageURL = bitmapImageURL,
         redirectURL = null,
         0f,
         0f,
@@ -39,22 +39,25 @@ fun GetBranchesQuery.AugmentedImage.toAugmentedImageAndroid(): AugmentedImage {
 //TODO: IMPROVE CODE TO AVOID DUPLICATION
 fun BranchesWithOpenPositionsNearbyQuery.AugmentedImage.toAugmentedImageAndroid(): AugmentedImage {
     Log.d("debugging", "${modelURL} ${imageURL}")
-    val bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
-    return AugmentedImage(
+   // val bitmapImageURL: Bitmap = imageURLToBitmap(imageURL)
+    val augmentedImage = AugmentedImage(
         imageURL = imageURL,
         modelURL = modelURL,
-        bitmapImageURL = bitmapImageURL,
+        // bitmapImageURL = bitmapImageURL,
         redirectURL = null,
         scale= scale.toFloat(),
         summaryScale = summaryScale.toFloat(),
         summaryX = summaryX.toFloat(),
         summaryZ = summaryZ.toFloat()
     )
+
+    augmentedImage.initializeImageURLtoBitmap()
+    return augmentedImage
 }
 
-public fun imageURLToBitmap(imageURL: String): Bitmap {
+/*public fun imageURLToBitmap(imageURL: String): Bitmap {
     val url = URL(imageURL)
     Log.d("debugging", "casi casi")
     val openStream = url.openStream()
     return BitmapFactory.decodeStream(openStream)
-}
+}*/

@@ -2,6 +2,7 @@ package com.immersion.immersionandroid.presentation
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,8 @@ class BranchViewModel @Inject constructor(
     private val mutableAugmentedImageRedirectURL = MutableLiveData<Uri>()
 
     private val mutableCompanyId = MutableLiveData<String>()
+
+    private val mutableCompanyFullAddress = MutableLiveData<String>()
 
     fun addImageBitmap(bitmap: Bitmap?) {
         mutableImageBitmap.value = bitmap
@@ -64,7 +67,7 @@ class BranchViewModel @Inject constructor(
             AugmentedImage(
                 response.url,
                 "",
-                mutableImageBitmap.value!!,
+                // mutableImageBitmap.value!!,
                 mutableAugmentedImageRedirectURL.value,
                 0f,
                 0f,
@@ -72,14 +75,21 @@ class BranchViewModel @Inject constructor(
                 0f
             )
 
+        Log.d("branch", mutableCompanyFullAddress.value!!)
         val newBranch =
             Branch(
                 mutableNewBranchAddress.value!!,
                 newAugmentedRealityImage,
                 mutableCompanyId.value!!,
-                id = ""
+                id = "",
+                fullAddress = mutableCompanyFullAddress.value!!
             )
         return this.branchRepository.create(newBranch)
+    }
+
+    fun setBranchAddress(address: String){
+        Log.d("branch", address)
+        mutableCompanyFullAddress.value = address
     }
 
     fun changeBranchCoordinates(latLong: LatLng) {
