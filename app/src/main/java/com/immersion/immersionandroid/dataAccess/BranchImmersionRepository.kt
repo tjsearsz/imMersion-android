@@ -1,5 +1,6 @@
 package com.immersion.immersionandroid.dataAccess
 
+import android.graphics.Bitmap
 import android.net.Uri
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
@@ -35,7 +36,10 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
             address = listOf(
                 entity.address.longitude,
                 entity.address.latitude
-            ), companyId = entity.companyId, augmentedImage = imageInput
+            ),
+            companyId = entity.companyId,
+            augmentedImage = imageInput,
+            fullAddress = entity.fullAddress
         )
         return AddBranchMutation(data)
 
@@ -43,12 +47,12 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
 
     override fun handleCreateResponse(response: ApolloResponse<AddBranchMutation.Data>?): IEmployerOwnerShip? {
         if (response !== null && !response.hasErrors()) {
-            val (address, isEnabled, _id, immediateAncestor, augmentedImage) = response.data!!.createBranch
+            val (address, isEnabled, _id, immediateAncestor, augmentedImage, fullAddress) = response.data!!.createBranch
 
             val parsedAugmentedImage = AugmentedImage(
                 augmentedImage.imageURL,
                 augmentedImage.modelURL,
-                imageURLToBitmap(augmentedImage.imageURL),
+                // imageURLToBitmap(augmentedImage.imageURL),
                 if (augmentedImage.redirectURL != null) Uri.parse(augmentedImage.redirectURL) else null,
                 0f,
                 0f,
@@ -57,7 +61,14 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
             )
 
             val finalAddress = LatLng(address[1], address[0])
-            return Branch(finalAddress, parsedAugmentedImage, immediateAncestor, isEnabled, _id)
+            return Branch(
+                finalAddress,
+                parsedAugmentedImage,
+                immediateAncestor,
+                isEnabled,
+                _id,
+                fullAddress = fullAddress
+            )
         }
 
         return null
@@ -83,7 +94,8 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
                     isEnabled = branch.isEnabled,
                     id = branch._id,
                     address = LatLng(branch.address[1], branch.address[0]),
-                    augmentedImage = branch.augmentedImage.toAugmentedImageAndroid()
+                    augmentedImage = branch.augmentedImage.toAugmentedImageAndroid(),
+                    fullAddress = branch.fullAddress
                 )
             }
         }

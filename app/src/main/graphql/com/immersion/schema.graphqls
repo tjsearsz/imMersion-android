@@ -66,6 +66,11 @@ type Branch {
   augmentedImage: AugmentedImage!
 
   """
+  The full address in text
+  """
+  fullAddress: String!
+
+  """
   Company where this branch belongs
   """
   immediateAncestor: String!
@@ -138,6 +143,11 @@ input CreateBranchInput {
   Company where this branch belongs to
   """
   companyId: String!
+
+  """
+  The full address in text of the user
+  """
+  fullAddress: String!
 }
 
 input CreateCompanyInput {
@@ -338,6 +348,11 @@ input UpdateBranchInput {
   Address of this Branch Long/Lat
   """
   address: [Float!]!
+
+  """
+  The full address in text of the user
+  """
+  fullAddress: String!
 
   """
   ID of the branch

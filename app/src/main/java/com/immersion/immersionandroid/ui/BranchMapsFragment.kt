@@ -2,8 +2,13 @@ package com.immersion.immersionandroid.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +18,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -32,6 +38,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.immersion.immersionandroid.R
 import com.immersion.immersionandroid.databinding.FragmentBranchMapsBinding
 import com.immersion.immersionandroid.presentation.BranchViewModel
+import kotlinx.coroutines.launch
 
 class BranchMapsFragment : Fragment(), OnMapReadyCallback {
 
@@ -98,7 +105,18 @@ class BranchMapsFragment : Fragment(), OnMapReadyCallback {
             override fun onPlaceSelected(place: Place) {
                 // val add = place.address
                 val latLng = place.latLng
+                Log.d("branch", "elegi el lugar")
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.setBranchAddress(place.address!!)
+                }
                 moveCamera(latLng, "Location")
+
+                //https://stackoverflow.com/questions/54499335/android-place-autocomplete-fragment-unable-to-set-text
+                Handler(Looper.getMainLooper()).postDelayed(
+                    { autoCompleteFragment.setText(place.address!!.toString()) },
+                    1
+                )
+
             }
 
         })
@@ -110,13 +128,13 @@ class BranchMapsFragment : Fragment(), OnMapReadyCallback {
             getCurrentLocationOfUser()
         }
 
-        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-            isGranted ->
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
 
-            if(isGranted){
-                getCurrentLocationOfUser()
+                if (isGranted) {
+                    getCurrentLocationOfUser()
+                }
             }
-        }
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -127,22 +145,22 @@ class BranchMapsFragment : Fragment(), OnMapReadyCallback {
         getCurrentLocationOfUser()
     }
 
-   /* override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
+    /* override fun onRequestPermissionsResult(
+         requestCode: Int,
+         permissions: Array<out String>,
+         grantResults: IntArray
+     ) {
+         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+         when (requestCode) {
 
-            PERMISSION_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+             PERMISSION_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                getCurrentLocationOfUser()
-            }
-        }
-    }*/
+                 getCurrentLocationOfUser()
+             }
+         }
+     }*/
 
-    private fun askForGPSPermission(){
+    private fun askForGPSPermission() {
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
@@ -155,11 +173,11 @@ class BranchMapsFragment : Fragment(), OnMapReadyCallback {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-           /* ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSION_CODE
-            )*/
+            /* ActivityCompat.requestPermissions(
+                 requireActivity(),
+                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                 PERMISSION_CODE
+             )*/
 
             askForGPSPermission()
 
@@ -172,6 +190,34 @@ class BranchMapsFragment : Fragment(), OnMapReadyCallback {
                 if (location != null) {
 
                     currentLocation = location
+
+                    val geoCoder = Geocoder(requireContext())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        geoCoder.getFromLocation(
+                            location.latitude,
+                            location.longitude,
+                            1,
+                            object : Geocoder.GeocodeListener {
+                                override fun onGeocode(addresses: MutableList<Address>) {
+
+                                    autoCompleteFragment.setText("${addresses!![0].locality}, ${addresses!![0].countryName}")
+                                    viewLifecycleOwner.lifecycleScope.launch {
+
+                                        viewModel.setBranchAddress("${addresses!![0].locality}, ${addresses!![0].countryName}")
+                                    }
+                                }
+                            })
+                    } else {
+                        val address =
+                            geoCoder.getFromLocation(location.latitude, location.longitude, 1)!![0]
+
+
+                        autoCompleteFragment.setText("${address.locality}, ${address.countryName}")
+                        viewLifecycleOwner.lifecycleScope.launch {
+
+                            viewModel.setBranchAddress("${address.locality}, ${address.countryName}")
+                        }
+                    }
 
                     val mapFragment =
                         childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment

@@ -9,6 +9,7 @@ mutation addBranch($input: CreateBranchInput!) {
             imageURL
             modelURL
         }
+        fullAddress
     }
 }
 
@@ -23,6 +24,7 @@ query getBranches($input: String!) {
             redirectURL
             modelURL
         }
+        fullAddress
     }
 }
 
