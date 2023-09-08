@@ -25,17 +25,32 @@ class JobImmersionRepository(apolloClient: ApolloClient) :
 
     override fun prepareCreate(entity: Job): Mutation<AddJobMutation.Data> {
 
+        val arRedirectUrl =
+            if (entity.redirectURL !== null) Optional.present(entity.redirectURL.toString()) else Optional.absent()
 
         val createJobInput =
-            CreateJobInput(entity.branchId, entity.description, entity.name)
+            CreateJobInput(
+                entity.branchId,
+                entity.description,
+                entity.name,
+                entity.positions,
+                arRedirectUrl
+            )
         return AddJobMutation(createJobInput)
     }
 
     override fun handleCreateResponse(response: ApolloResponse<AddJobMutation.Data>?): IEmployerOwnerShip? {
         if (response !== null && !response.hasErrors()) {
-            val (name, _id, description, immediateAncestor) = response.data!!.createJob
+            val (name, _id, description, immediateAncestor, redirectURL, positions) = response.data!!.createJob
 
-            return Job(name, description, immediateAncestor, _id)
+            return Job(
+                name,
+                description,
+                immediateAncestor,
+                _id,
+                if (redirectURL !== null) Uri.parse(redirectURL) else null,
+                positions
+            )
         }
 
         return null
@@ -60,7 +75,9 @@ class JobImmersionRepository(apolloClient: ApolloClient) :
                     name = job.name,
                     id = job._id,
                     description = job.description,
-                    branchId = job.immediateAncestor
+                    branchId = job.immediateAncestor,
+                    positions = job.positions,
+                    redirectURL = if (job.redirectURL !== null) Uri.parse(job.redirectURL) else null
                 )
             }
         }

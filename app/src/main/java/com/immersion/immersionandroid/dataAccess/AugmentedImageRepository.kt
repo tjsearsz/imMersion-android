@@ -1,5 +1,6 @@
 package com.immersion.immersionandroid.dataAccess
 
+import android.net.Uri
 import android.util.Log
 import com.apollographql.apollo3.ApolloClient
 import com.google.android.gms.maps.model.LatLng
@@ -86,7 +87,16 @@ class AugmentedImageRepository(
 
                 response.data!!.branchesWithOpenPositionsNearby.forEach {
                     augmentedImageMap[it.augmentedImage.toAugmentedImageAndroid()] =
-                        it.jobs.map { job -> Job(job.name, job.description, "", "") }
+                        it.jobs.map { job ->
+                            Job(
+                                job.name,
+                                job.description,
+                                "",
+                                "",
+                                if (job.redirectURL !== null) Uri.parse(job.redirectURL) else null,
+                                job.positions
+                            )
+                        }
                 }
 
                 return augmentedImageMap

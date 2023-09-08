@@ -50,33 +50,16 @@ class BranchImageFragment : Fragment() {
 
         binding.createBranchButton.setOnClickListener {
 
-            val intendedURL = binding.imageUrl.text.toString().trim()
-
-            Log.d("TESTING", intendedURL)
-            var proceedWithCreation = true
-
-            if (!TextUtils.isEmpty(intendedURL))
-                proceedWithCreation = viewModel.validateUrl(intendedURL)
-
-
-            if (proceedWithCreation)
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                    val newBranch = viewModel.createBranch()
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                        if(newBranch != null){
-                            val intent = Intent().putExtra("entity", newBranch)
-                            requireActivity().setResult(Activity.RESULT_OK,intent)
-                            requireActivity().finish()
-                        }
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val newBranch = viewModel.createBranch()
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    if (newBranch != null) {
+                        val intent = Intent().putExtra("entity", newBranch)
+                        requireActivity().setResult(Activity.RESULT_OK, intent)
+                        requireActivity().finish()
                     }
                 }
-            else
-                Toast.makeText(
-                    context,
-                    "URL inserted is not valid. Please fix it or remove it",
-                    Toast.LENGTH_LONG
-                ).show()
-
+            }
         }
 
         //@Todo: check in the code places where we should handle exceptions

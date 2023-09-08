@@ -51,7 +51,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApolloClient(dataStoreRepository: IDataStoreRepository): ApolloClient {
-        return ApolloClient.Builder().serverUrl("http://10.5.53.197:3000/graphql")
+        return ApolloClient.Builder().serverUrl("http://10.5.53.229:3000/graphql")
             .addHttpInterceptor(AuthorizationInterceptor(dataStoreRepository)).build()
     }
 

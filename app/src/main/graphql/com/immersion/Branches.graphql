@@ -5,7 +5,6 @@ mutation addBranch($input: CreateBranchInput!) {
         _id
         immediateAncestor
         augmentedImage{
-            redirectURL
             imageURL
             modelURL
         }
@@ -21,7 +20,6 @@ query getBranches($input: String!) {
         _id
         augmentedImage{
             imageURL
-            redirectURL
             modelURL
         }
         fullAddress
@@ -33,7 +31,6 @@ query branchesWithOpenPositionsNearby($input: [Float!]!){
         augmentedImage{
             imageURL
             modelURL
-            redirectURL
             scale
             summaryScale
             summaryX
@@ -42,6 +39,8 @@ query branchesWithOpenPositionsNearby($input: [Float!]!){
         jobs{
             name
             description
+            redirectURL
+            positions
         }
     }
 }

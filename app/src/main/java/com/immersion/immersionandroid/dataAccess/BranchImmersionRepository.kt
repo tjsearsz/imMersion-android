@@ -24,12 +24,9 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
     ) {
     override fun prepareCreate(entity: Branch): Mutation<AddBranchMutation.Data> {
 
-        val arRedirectUrl =
-            if (entity.augmentedImage.redirectURL !== null) Optional.present(entity.augmentedImage.redirectURL.toString()) else Optional.absent()
-
         val imageInput = AugmentedImageInput(
-            entity.augmentedImage.imageURL,
-            arRedirectUrl
+            entity.augmentedImage.imageURL//,
+           // arRedirectUrl
         )
 
         val data = CreateBranchInput(
@@ -53,7 +50,7 @@ class BranchImmersionRepository(apolloClient: ApolloClient) :
                 augmentedImage.imageURL,
                 augmentedImage.modelURL,
                 // imageURLToBitmap(augmentedImage.imageURL),
-                if (augmentedImage.redirectURL != null) Uri.parse(augmentedImage.redirectURL) else null,
+                // if (augmentedImage.redirectURL != null) Uri.parse(augmentedImage.redirectURL) else null,
                 0f,
                 0f,
                 0f,

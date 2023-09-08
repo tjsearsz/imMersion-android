@@ -32,12 +32,28 @@ class JobViewModel @Inject constructor(
 
     private val mutableNewJobDescription = MutableLiveData<String>()
 
+    private val mutableNewPositions = MutableLiveData<Int>()
 
-    fun addJobNameAndDescription(jobName: String, jobDescription: String) {
+    private val mutableAugmentedImageRedirectURL = MutableLiveData<Uri?>()
+
+
+    fun addJobInformation(
+        jobName: String,
+        jobDescription: String,
+        positions: Int
+    ) {
         mutableNewJobName.value = jobName
         mutableNewJobDescription.value = jobDescription
+        mutableNewPositions.value = positions
     }
 
+    fun validateUrl(intendedUrl: String): Boolean {
+        if (Patterns.WEB_URL.matcher(intendedUrl).matches()) {
+            mutableAugmentedImageRedirectURL.value = Uri.parse(intendedUrl)
+            return true
+        }
+        return false
+    }
 
 
     suspend fun createNewJob(branchId: String): IEmployerOwnerShip? {
@@ -47,7 +63,9 @@ class JobViewModel @Inject constructor(
             mutableNewJobName.value!!,
             mutableNewJobDescription.value!!,
             branchId,
-            ""
+            "",
+            mutableAugmentedImageRedirectURL.value!!,
+            mutableNewPositions.value!!
         )
         return this.jobRepository.create(newJob)
     }
