@@ -10,11 +10,6 @@ type AugmentedImage {
   modelURL: String!
 
   """
-  Redirect page when clicking the image
-  """
-  redirectURL: String
-
-  """
   Scale that the Augmented Image will have
   """
   scale: Float!
@@ -40,11 +35,6 @@ input AugmentedImageInput {
   URL where the image of the new model is located
   """
   imageURL: String!
-
-  """
-  URL where the user can click to get redirected to
-  """
-  redirectURL: String
 }
 
 """
@@ -182,6 +172,16 @@ input CreateJobInput {
   Title of the new Job
   """
   name: String!
+
+  """
+  number of available positions for this job
+  """
+  positions: Int!
+
+  """
+  URL where the user can click to get redirected to
+  """
+  redirectURL: String
 }
 
 input CreateUserInput {
@@ -241,6 +241,16 @@ type Job {
   Title of the job
   """
   name: String!
+
+  """
+  number of open positions available
+  """
+  positions: Int!
+
+  """
+  Redirect page when checking the information of the job
+  """
+  redirectURL: String
 }
 
 """
@@ -412,6 +422,16 @@ input UpdateJobInput {
   Title of the new Job
   """
   name: String!
+
+  """
+  number of available positions for this job
+  """
+  positions: Int!
+
+  """
+  URL where the user can click to get redirected to
+  """
+  redirectURL: String
 }
 
 input UpdateUserInput {

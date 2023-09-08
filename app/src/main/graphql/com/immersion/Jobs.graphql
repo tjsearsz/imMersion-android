@@ -4,6 +4,8 @@ mutation addJob($input: CreateJobInput!){
         _id
         description
         immediateAncestor
+        redirectURL
+        positions
     }
 }
 
@@ -13,5 +15,7 @@ query getJobs($input: String!){
         immediateAncestor
         _id
         description
+        redirectURL
+        positions
     }
 }

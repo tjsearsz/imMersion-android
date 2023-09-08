@@ -1,24 +1,31 @@
 package com.immersion.immersionandroid.ui
 
+// import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
 import android.Manifest
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.GestureDetector
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,13 +37,12 @@ import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.immersion.immersionandroid.R
+import com.immersion.immersionandroid.databinding.CustomDialogBinding
 import com.immersion.immersionandroid.databinding.FragmentARBinding
 import com.immersion.immersionandroid.domain.AugmentedImage
 import com.immersion.immersionandroid.domain.IEmployerOwnerShip
 import com.immersion.immersionandroid.domain.Job
 import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
-import dev.romainguy.kotlin.math.rotation
-// import com.immersion.immersionandroid.presentation.AugmentedRealityViewModel
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.arcore.isTracking
 import io.github.sceneview.ar.node.AugmentedImageNode
@@ -71,6 +77,11 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
     private var isBusinessOwner: Boolean by Delegates.notNull<Boolean>()
 
     private val binding get() = _binding!!
+
+    private lateinit var summaryDialog: Dialog
+
+    private var _summaryBinding: CustomDialogBinding? = null
+    private val summaryBinding get() = _summaryBinding!!
 
     private fun setupImageDatabase(result: LinkedHashMap<AugmentedImage, List<IEmployerOwnerShip>> /*List<AugmentedImage>*/) {
 
@@ -172,6 +183,7 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
                                 viewNode.apply {
                                     onTap = { motionEvent, _ ->
                                         Log.d("tapping", "tapeando workaround")
+                                        displayingSummaryInfo(jobList)
                                     }
                                     transform(
                                         position = Position(
@@ -422,6 +434,98 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
         }
     }
 
+    private fun displayingSummaryInfo(jobList: List<IEmployerOwnerShip>) {
+
+        summaryDialog = Dialog(requireContext())
+
+
+        val params: LinearLayout.LayoutParams =
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+
+        params.apply {
+            bottomMargin = 50
+            topMargin = 50
+        }
+
+        val params2: LinearLayout.LayoutParams =
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+
+        params2.apply {
+            bottomMargin = 50
+        }
+        // val layout = summaryBinding.dialogJobs
+        // layout.removeAllViews()
+
+        val layout = LayoutInflater.from(requireContext()).inflate(R.layout.custom_dialog, null)
+        val container = layout.findViewById<LinearLayout>(R.id.dialogJobs)
+
+        container.removeAllViews()
+
+        // val test = "<a href='http://www.google.com'> Google </a>";
+
+        jobList.forEach {
+            val job = it as Job
+
+            val title = TextView(requireContext())
+            title.apply {
+                text = "Position: ${job.name} \n Available: ${job.positions}"
+                gravity = Gravity.CENTER
+            }
+
+            val description = TextView(requireContext())
+            description.apply {
+               /* text =
+                    " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mollis suscipit semper. In hac habitasse platea dictumst. Aliquam viverra at nulla feugiat gravida. Quisque scelerisque tellus ex, a consequat sem ultricies quis. Nam euismod pretium ante, vel blandit nibh sollicitudin vitae. In sem mauris, fermentum a quam id, sollicitudin venenatis neque. Donec dignissim diam ligula, vitae consectetur nunc tristique a. Nullam feugiat purus nec risus accumsan tincidunt eu quis eros. Sed in neque quis mi convallis pharetra.\n" +
+                            "\n" +
+                            "Proin finibus diam eleifend, facilisis nibh at, aliquet risus. Donec eu malesuada est, eget dignissim orci. Morbi ultrices quis leo at semper. Mauris tempus auctor ligula, non imperdiet erat suscipit vel. Quisque eu leo mauris. Donec eget risus eget leo feugiat porttitor. Proin scelerisque sapien ex, vel lacinia lectus elementum sed. Cras aliquet euismod ex. Suspendisse varius libero vel ultrices tristique. Maecenas pellentesque et eros id sodales. Proin a pharetra ante. Duis dignissim ante arcu, in ultrices leo dictum vitae.\n" +
+                            "\n" +
+                            "Aenean sed vulputate nulla. Fusce sit amet iaculis turpis. Duis rhoncus lacinia lacus id feugiat. Quisque vitae consequat ex. Quisque ultricies dolor et ipsum tristique varius. Ut non imperdiet odio. Cras lobortis mattis placerat. Morbi rhoncus quam vel lacus molestie semper. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam vehicula varius mattis. Phasellus hendrerit porttitor diam, id interdum ipsum ultricies vitae. Etiam vel facilisis nibh, vitae porttitor odio.\n" +
+                            "\n" +
+                            "Sed dapibus ultricies luctus. In imperdiet elit pharetra lectus bibendum dapibus. Nulla vel erat blandit orci rhoncus facilisis id id enim. Aenean cursus enim dictum, porta ante sit amet, blandit ligula. Praesent porta feugiat purus, sed consectetur eros tincidunt in. Aliquam laoreet blandit justo, ut mattis ipsum bibendum vel. Maecenas pellentesque, justo sed dictum congue, magna massa viverra tortor, sit amet venenatis dui turpis id nisi. Donec mattis velit in arcu rhoncus, sit amet commodo purus pretium. Nulla at nulla vel risus convallis cursus. Vestibulum egestas velit id scelerisque porta. Nullam eget convallis eros, vel suscipit leo. Duis cursus, dolor sagittis pharetra ultrices, nunc erat porta arcu, ut porta ante purus ut risus.\n" +
+                            "\n" +
+                            "Vivamus tristique auctor purus, in aliquam enim interdum nec. Sed iaculis id felis eu imperdiet. Nunc sit amet nisl a ante auctor egestas. Etiam vel nisi at arcu cursus mollis. Mauris sollicitudin neque eget eleifend vestibulum. Donec eu elit velit. Vestibulum vitae orci accumsan, auctor quam in, imperdiet augue. Ut risus velit, placerat in maximus in, pellentesque eu dui. In hac habitasse platea dictumst. " */
+                text = job.description
+                gravity = Gravity.CENTER
+                layoutParams = params
+                // movementMethod = LinkMovementMethod.getInstance()
+            }
+
+            container.addView(title)
+            container.addView(description)
+
+            // if(test.isNotEmpty()){
+            if (job.redirectURL !== null) {
+                val link = TextView(requireContext())
+
+                link.apply {
+                    text = Html.fromHtml(
+                        "<a href='${job.redirectURL}'> Click here </a>",
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                    gravity = Gravity.CENTER
+                    layoutParams = params2
+                    movementMethod = LinkMovementMethod.getInstance()
+                }
+
+                link.setOnClickListener {
+                    summaryDialog.dismiss()
+                }
+
+                container.addView(link)
+            }
+        }
+
+        // this.summaryDialog.setContentView(layout.rootView)
+        this.summaryDialog.setContentView(layout)
+        this.summaryDialog.show()
+    }
+
     private fun onSingleTap(motionEvent: MotionEvent): Boolean {
         val pickNode = sceneView.pickHitTest(motionEvent, false).node
         if (pickNode != null && pickNode is ViewNode) {
@@ -498,6 +602,7 @@ class FragmentAR : Fragment(R.layout.fragment_a_r) {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentARBinding.inflate(inflater, container, false)
+        _summaryBinding = CustomDialogBinding.inflate(layoutInflater, null, false)
         return binding.root
     }
 

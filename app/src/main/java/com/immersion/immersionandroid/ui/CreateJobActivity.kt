@@ -5,7 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.immersion.immersionandroid.databinding.ActivityCreateJobBinding
@@ -31,21 +34,38 @@ class CreateJobActivity : AppCompatActivity() {
         val branchId = intent.extras!!.getString("branchId")!!
 
         binding.createJobButton.setOnClickListener {
-            viewModel.addJobNameAndDescription(
-                binding.jobTitle.text.toString(),
-                binding.jobDescription.text.toString()
-            )
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                val newJob = viewModel.createNewJob(branchId)
-                lifecycleScope.launch(Dispatchers.Main) {
-                    if (newJob != null) {
-                        val resultIntent = Intent().putExtra("entity", newJob)
-                        setResult(Activity.RESULT_OK, resultIntent)
-                        finish()
+            val intendedURL = binding.imageUrl.text.toString().trim()
+
+            Log.d("TESTING", intendedURL)
+            var proceedWithCreation = true
+
+            if (!TextUtils.isEmpty(intendedURL))
+                proceedWithCreation = viewModel.validateUrl(intendedURL)
+
+            if (proceedWithCreation) {
+                viewModel.addJobInformation(
+                    binding.jobTitle.text.toString(),
+                    binding.jobDescription.text.toString(),
+                    Integer.parseInt(binding.jobPositions.text.toString())
+                )
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val newJob = viewModel.createNewJob(branchId)
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        if (newJob != null) {
+                            val resultIntent = Intent().putExtra("entity", newJob)
+                            setResult(Activity.RESULT_OK, resultIntent)
+                            finish()
+                        }
                     }
                 }
-            }
+            } else
+                Toast.makeText(
+                    this,
+                    "URL inserted is not valid. Please fix it or remove it",
+                    Toast.LENGTH_LONG
+                ).show()
         }
 
         binding.jobTitle.addTextChangedListener(object : TextWatcher {
@@ -59,6 +79,22 @@ class CreateJobActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
 
+        })
+
+        binding.jobPositions.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s?.length == 1 && s.toString().equals("0"))
+                    binding.jobPositions.setText("1");
+
+            }
         })
     }
 

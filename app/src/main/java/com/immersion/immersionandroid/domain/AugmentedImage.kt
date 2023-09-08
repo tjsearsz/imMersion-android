@@ -13,7 +13,6 @@ import java.net.URL
 data class AugmentedImage(
     val imageURL: String,
     val modelURL: String,
-    val redirectURL: Uri?,
     val scale: Float,
     val summaryScale: Float,
     val summaryX: Float,
@@ -24,9 +23,15 @@ data class AugmentedImage(
     lateinit var bitmapImageURL: Bitmap
 
     fun initializeImageURLtoBitmap(){
+        try{
         val url = URL(imageURL)
         Log.d("debugging", "casi casi")
         val openStream = url.openStream()
         this.bitmapImageURL = BitmapFactory.decodeStream(openStream)
+        }
+        catch(exception: Exception){
+            exception.printStackTrace()
+            throw exception
+        }
     }
 }

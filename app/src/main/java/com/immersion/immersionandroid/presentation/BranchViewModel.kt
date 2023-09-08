@@ -30,7 +30,7 @@ class BranchViewModel @Inject constructor(
 
     private val mutableImageBitmap = MutableLiveData<Bitmap?>()
 
-    private val mutableAugmentedImageRedirectURL = MutableLiveData<Uri>()
+    // private val mutableAugmentedImageRedirectURL = MutableLiveData<Uri>()
 
     private val mutableCompanyId = MutableLiveData<String>()
 
@@ -38,14 +38,6 @@ class BranchViewModel @Inject constructor(
 
     fun addImageBitmap(bitmap: Bitmap?) {
         mutableImageBitmap.value = bitmap
-    }
-
-    fun validateUrl(intendedUrl: String): Boolean {
-        if (Patterns.WEB_URL.matcher(intendedUrl).matches()) {
-            mutableAugmentedImageRedirectURL.value = Uri.parse(intendedUrl)
-            return true
-        }
-        return false
     }
 
     private fun createByteArrayFromBitmap(): ByteArray {
@@ -68,7 +60,7 @@ class BranchViewModel @Inject constructor(
                 response.url,
                 "",
                 // mutableImageBitmap.value!!,
-                mutableAugmentedImageRedirectURL.value,
+                //mutableAugmentedImageRedirectURL.value,
                 0f,
                 0f,
                 0f,
